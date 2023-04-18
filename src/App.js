@@ -119,13 +119,11 @@ function ActivityScreen() {
 
 function TaskAcScreen() {
   const [task, setTask] = useState([])
-  const [text,setText] = useState("")
   const [activity, setActivity] = useState([])
   const [selectedOptions, setSelectedOptions] = useState([]);
   useEffect(() => {
     getAllTask(setTask)
     getAllActivity(setActivity)
-    console.log(selectedOptions)
   }, [])
   /*
   const updateMode = (_id, text) =>{
