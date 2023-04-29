@@ -49,20 +49,18 @@ const Ta = ({ text}) => {
     setIsactModalOpen(false);
   };
 
-    const handleCheckboxChange = (itemText, isChecked) => {
-      if (isChecked) {
-        setSelectedItems(prevSelectedItems => [...prevSelectedItems, { text: itemText }]);
-        console.log(selectedItems)
-      } else {
-        setSelectedItems(prevSelectedItems => prevSelectedItems.filter(item => item.text === itemText));
-        console.log(selectedItems)
-      }
-      
-
-      updateTask(taskId, text, setTask, setText, setIsUpdating, selectedItems);
+  const handleCheckboxChange = (itemId) => {
+    const selectedItem = activity.find((item) => item._id === itemId);
+    if (selectedItems.some((item) => item._id === itemId)) {
+      // Item is already selected, so remove it
+      setSelectedItems((prevSelectedItems) => prevSelectedItems.filter((item) => item._id !== itemId));
+    } else {
+      // Item is not selected, so add it
+      setSelectedItems((prevSelectedItems) => [...prevSelectedItems, selectedItem]);
+    }
+      console.log(selectedItems)
       console.log(taskId)
       console.log(text)
-      console.log(selectedItems)
     };
 
 
@@ -95,19 +93,16 @@ const Ta = ({ text}) => {
                             <form>
                               <div>
                                 <h1>Items</h1>
-                                <form>
+                                <div>
                                   {activity.map((item) => (
-                                    <label key={item.id}>
-                                      <input
-                                        type="checkbox"
-                                        value={item.id}
-                                        checked={checkedOptions.includes(item.text)}
-                                        onChange={(e) => handleCheckboxChange(item.text, e.target.checked)}
-                                      />
-                                      {item.text}
-                                    </label>
+                                    <div key={item._id}>
+                                      <label>
+                                        <input type="checkbox" onChange={() => handleCheckboxChange(item._id)} checked={selectedItems.some((selectedItem) => selectedItem._id === item._id)} />
+                                        {item.text}
+                                      </label>
+                                    </div>
                                   ))}
-                                </form>
+                                </div>
                               </div>
                           </form>
           <button onClick={closeactModal} className="modal-btn">Close</button>
