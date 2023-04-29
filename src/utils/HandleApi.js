@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-const baseurl = "https://tasker-backend.onrender.com/tasks"
-const baseurlac = "https://tasker-backend.onrender.com/activities"
+const baseurl = "http://localhost:5000/tasks"
+const baseurlac = "http://localhost:5000/activities"
 
 /*https://tasker-backend.onrender.com*/
 const getAllTask = (setTask) => {
@@ -22,6 +22,8 @@ const getAllActivity = (setActivity) => {
     })
 }
 
+
+
 const addTask = (text, setText, setTask) =>{
     axios
     .post(`${baseurl}/save`,{text})
@@ -33,25 +35,25 @@ const addTask = (text, setText, setTask) =>{
 }
 
 
-const addActivity = (text, setText, setActivity) =>{
+const addActivity = (acttext, setacttext, setActivity) =>{
     axios
-    .post(`${baseurlac}/save`,{text})
+    .post(`${baseurlac}/save`,{text: acttext})
     .then((data) =>{
         console.log(data);
-        setText("")
+        setacttext("")
         getAllActivity(setActivity)
     }).catch((err) => console.log(err))
 }
 
 
-const updateTask = (taskId, text, setTask, setText, setIsUpdating, selectedOptions) =>{
+const updateTask = (taskId, text, setTask, setText, setIsUpdating, selectedItems) =>{
     axios
-    .post(`${baseurl}/update`,{_id: taskId, text, selectedOptions: selectedOptions})
+    .post(`${baseurl}/update`,{_id: taskId, text, selectedItems})
     .then((data) =>{
         setText("")
         setIsUpdating(false)
         getAllTask(setTask)
-        console.log(selectedOptions)
+        console.log(selectedItems)
     })
     .catch((err) => console.log(err))
 }
@@ -66,9 +68,9 @@ const updateTaskta = (taskId,setTask, selectedOptions) =>{
 }
 
 
-const updateActivity = (ActivityID, text, setActivity, setText, setIsUpdating) =>{
+const updateActivity = (ActivityID, acttext, setActivity, setText, setIsUpdating) =>{
     axios
-    .post(`${baseurlac}/update`,{_id: ActivityID, text})
+    .post(`${baseurlac}/update`,{_id: ActivityID, text: acttext})
     .then((data) =>{
         setText("")
         setIsUpdating(false)

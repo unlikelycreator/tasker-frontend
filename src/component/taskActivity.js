@@ -2,15 +2,15 @@ import React from "react";
 import { useState } from "react";
 import { getAllTask, getAllActivity, updateTask} from "../utils/HandleApi";
 import { useEffect } from "react";
-import Multiselect from 'multiselect-react-dropdown';
+//import Multiselect from 'multiselect-react-dropdown';
 
-const Ta = ({ text, selectedoptions}) => {
+const Ta = ({ text}) => {
   const [checkedOptions, setCheckedOptions] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isactModalOpen, setIsactModalOpen] = useState(false);
   const [activity, setActivity] = useState([]);
   const [task, setTask] = useState([])
-  const [selectedTask, setSelectedTask] = useState([]);
-  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
   const [taskId, setTaskId] = useState("");
   const[isUpdating, setIsUpdating] = useState(false)
   const [tex,setText] = useState("")
@@ -21,82 +21,122 @@ const Ta = ({ text, selectedoptions}) => {
   }, [])
 
 
-  const handleSelect = (selectedList) => {
-    setSelectedOptions(selectedList);
-  };
 
-  const handleSelectChange = (event) => {
-    const selectedTaskText = event.target.value;
-    console.log(selectedTaskText)
-    const selectedTask = task.find((task) => task.text === selectedTaskText);
-    setSelectedTask({ id: selectedTask._id, text: selectedTask.text });
-    setTaskId(selectedTask._id)
-  };
-
-  
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    closeModal();
-  };
-
-  const openModal = () => {
+  const openModal = (event) => {
     setIsModalOpen(true);
+    const searchText = text;
+    const matchingTask = task.find((task) => task.text === searchText);
+    if (matchingTask) {
+      console.log(`Match found for "${searchText}": ${matchingTask._id}`);
+      setTaskId(matchingTask._id)
+      setCheckedOptions(matchingTask.selectedItems);
+      console.log(checkedOptions)
+    } else {
+      console.log(`No match found for "${searchText}"`);
+    }
+  };
+
+  const openModalact = (e) => {
+    e.preventDefault();
+    setIsactModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
-  const handleOptionChange = (optionText) => {
-    if (checkedOptions.includes(optionText)) {
-      setCheckedOptions(checkedOptions.filter((text) => text !== optionText));
-    } else {
-      setCheckedOptions([...checkedOptions, optionText]);
-    }
+  const closeactModal = (e) => {
+    e.preventDefault();
+    setIsactModalOpen(false);
   };
 
+    const handleCheckboxChange = (itemText, isChecked) => {
+      if (isChecked) {
+        setSelectedItems(prevSelectedItems => [...prevSelectedItems, { text: itemText }]);
+        console.log(selectedItems)
+      } else {
+        setSelectedItems(prevSelectedItems => prevSelectedItems.filter(item => item.text === itemText));
+        console.log(selectedItems)
+      }
+      
+
+      updateTask(taskId, text, setTask, setText, setIsUpdating, selectedItems);
+      console.log(taskId)
+      console.log(text)
+      console.log(selectedItems)
+    };
+
+
+
+
+
   return (
-    <div className="ta-task">
-      <div className="ta-main">
-        <div className="ta-text"><b>{text}</b></div>
-        <div className="selectedoptions">
-          {selectedoptions.map((option, index) => (
-            <div key={index}>
-              <input
-                type="checkbox"
-                value={option.text}
-                onChange={() => handleOptionChange(option.text)}
-                checked={checkedOptions.includes(option.text)}
-              />
-              <label>{option.text}</label>
-            </div>
-          ))}
-        </div>
+    <div className="task">
+      <div className="main">
+        <div className="text"><b>{text}</b></div>
       </div>
       <button onClick={openModal} className="modal-btn">Edit</button>
+
+
       {isModalOpen && (
         <div className="modal">
-          <form onSubmit={handleSubmit}>
+          <form>
             <label>
-              Input Field:
-              <input
-                type="text"
-                value={text}
-                onChange={() => handleSelectChange(text)}
-                readOnly={true}
-              />
+              Your task:
+              <input type="text" value={text} readOnly={true} />
             </label>
-            <Multiselect
-                className="multiselect"
-                options={activity} 
-                selectedValues={selectedOptions}
-                displayValue="text" 
-                onSelect={handleSelect}
-                />
-            <div className="add" onClick={() => updateTask(taskId,text, setTask, setText, setIsUpdating, selectedOptions)}>Add</div>
-          </form>
-          <p>{taskId},{selectedTask},{tex},{isUpdating}</p>
+            <div className="modal-body">
+              <div className="modal-top">
+                <h2>Items</h2>
+                <button onClick={openModalact} className="modal-btn2">+</button>
+              </div>
+
+                        {isactModalOpen && (
+                          <div className="inner-modal">
+                            <form>
+                              <div>
+                                <h1>Items</h1>
+                                <form>
+                                  {activity.map((item) => (
+                                    <label key={item.id}>
+                                      <input
+                                        type="checkbox"
+                                        value={item.id}
+                                        checked={checkedOptions.includes(item.text)}
+                                        onChange={(e) => handleCheckboxChange(item.text, e.target.checked)}
+                                      />
+                                      {item.text}
+                                    </label>
+                                  ))}
+                                </form>
+                              </div>
+                          </form>
+          <button onClick={closeactModal} className="modal-btn">Close</button>
+        </div>
+      )}
+
+
+
+
+              <form>
+                {checkedOptions.map((item) => (
+                  <label key={item.id}>
+                    <input
+                      type="checkbox"
+                      value={item.id}
+                    />
+                    {item.text}
+                  </label>
+                ))}
+              </form>
+              {selectedItems.map((item, index) => (
+                  <p key={index}>{item.text}</p>
+                ))}
+            </div>
+    </form>
+       
           <button onClick={closeModal} className="modal-btn">Close</button>
+          
+          {tex}{isUpdating}
         </div>
       )}
     </div>

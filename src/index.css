@@ -10,8 +10,25 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
     background-color: #f6f6f6 ;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: Arial, Helvetica, sans-serif;
 }
+
+.modal-top{
+  display: flex;
+  height: 60px;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.modal-body{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
 
 .app-container{
   width: 100%;
@@ -26,6 +43,19 @@ body {
   height: 100vh;
   align-items: center;
   background-color: rgb(49, 122, 231);
+}
+
+.menu-container h1{
+  margin-top: 50px;
+}
+
+.modal-top h2{
+  text-align: center;
+  color: rgb(49, 122, 231);
+  padding-left: 20px;
+}
+.screen h1{
+  margin-top: 50px;
 }
 
 .menu-container button{
@@ -59,15 +89,6 @@ body {
   padding: 0 1rem;
 }
 
-
-.ta-container{
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
 .droptask{
   width: 400px;
   height: 50px;
@@ -79,13 +100,8 @@ body {
   height: 50px;
   margin-bottom: 20px;
 }
-.ta-container form{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: left;
-  width: 400px;
-}
+
+
 
 .form-group{
   width: 100%;
@@ -104,21 +120,9 @@ body {
   border-radius: 10px;
   background-color: #84b1f0;
 }
-.Alldata{
-  width: 100%;
-  display: flex;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
-}
 
-.ta-task{
-  background-color: #d0d0d0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px;
-  border-radius: 20px;
-}
+
+
 
 .modal-btn{
   padding: 10px 20px;
@@ -126,6 +130,13 @@ body {
   background-color: #3e8eff;
   color: white;
   border-radius: 10px;
+}
+
+.modal-btn2{
+  padding: 5px;
+  border: none;
+  background-color: #3e8eff;
+  color: white;
 }
 
 .modal-btn:hover{
@@ -137,35 +148,21 @@ body {
 }
 
 
-.ta-main{
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-}
-.ta-text{
-  font-size: 22px;
-  margin-bottom: 10px;
-}
-
 .selectedoptions{
   font-size: 18px;
   margin-left: 10px;
 }
 
-.ta-task{
-  width: 350px;
-  margin: 15px;
-}
 
 .ta-for{
   display: flex;
 }
 
 h1{
-  margin-top: 1rem;
   text-align: center;
   color: rgb(49, 122, 231);
 }
+
 
 
 .top{
@@ -219,6 +216,8 @@ h1{
   color: #323232;
   padding: 1.5rem 3rem;
   border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .task:hover{
@@ -245,11 +244,26 @@ h1{
 
 .modal {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 30%;
+  left: 30%;
+  transform: translate(-20%, -50%);
   background-color: white;
   width: 400px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inner-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(65%, -50%);
+  background-color: white;
+  width: 300px;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   z-index: 9999;
@@ -275,7 +289,9 @@ h1{
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 3px;
+  text-align: left;
 }
+
 
 .modal button[type="submit"],
 .modal .modal-btn {

@@ -7,7 +7,6 @@ import { addTask, getAllTask, updateTask, deleteTask, addActivity, getAllActivit
 
 
 function App() {
-
   const [activeScreen, setActiveScreen] = useState('task');
 
 
@@ -15,6 +14,7 @@ function App() {
   const handleMenuClick = (screenName) => {
     setActiveScreen(screenName);
   }
+
 
 
   return (
@@ -123,46 +123,35 @@ function ActivityScreen() {
 
 
 function TaskAcScreen() {
-
   const [task, setTask] = useState([])
-
-
+  const [Activity, setActivity] = useState([])
+  
   useEffect(() => {
     getAllTask(setTask)
+    getAllActivity(setActivity)
   }, [])
 
 
 
-  /*
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (taskId && selectedTask.length > 0) {
-      updateTask(taskId,setTask, selectedOptions);
-    }
-    console.log(taskId)
-    console.log(selectedOptions)
-  };*/
-
   return (
     <div className="screen">
-      <div className="ta-container" >
-        
+      <div className="container" >
 
       <h1>All Task & Activities</h1>
-      <div className="Alldata">
+      <div className="list">
       {task && task.length > 0 ? (
         task.map((task, index) => (
-          <Ta 
+          <Ta
           key={index} 
           text={task.text}
           selectedoptions={task.selectedOptions}
+          activities={Activity}
           />
         ))
       ) : (
         <p>No data found</p>
       )}
       </div>
-
     </div>
     </div>
   );
