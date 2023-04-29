@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { getAllTask, getAllActivity, updateTask} from "../utils/HandleApi";
+import { getAllTask, getAllActivity, /*updateTask*/} from "../utils/HandleApi";
 import { useEffect } from "react";
 //import Multiselect from 'multiselect-react-dropdown';
 
@@ -12,8 +12,8 @@ const Ta = ({ text}) => {
   const [task, setTask] = useState([])
   const [selectedItems, setSelectedItems] = useState([]);
   const [taskId, setTaskId] = useState("");
-  const[isUpdating, setIsUpdating] = useState(false)
-  const [tex,setText] = useState("")
+ //const[isUpdating, setIsUpdating] = useState(false)
+  //const [tex,setText] = useState("")
   
   useEffect(() => {
     getAllTask(setTask)
@@ -131,7 +131,7 @@ const Ta = ({ text}) => {
        
           <button onClick={closeModal} className="modal-btn">Close</button>
           
-          {tex}{isUpdating}
+          
         </div>
       )}
     </div>
