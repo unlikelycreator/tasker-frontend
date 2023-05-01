@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { getAllTask, getAllActivity, /*updateTask*/} from "../utils/HandleApi";
+import { getAllTask, getAllActivity, updateTask} from "../utils/HandleApi";
 import { useEffect } from "react";
 //import Multiselect from 'multiselect-react-dropdown';
 
@@ -12,8 +12,8 @@ const Ta = ({ text}) => {
   const [task, setTask] = useState([])
   const [selectedItems, setSelectedItems] = useState([]);
   const [taskId, setTaskId] = useState("");
- //const[isUpdating, setIsUpdating] = useState(false)
-  //const [tex,setText] = useState("")
+  const[isUpdating, setIsUpdating] = useState(false)
+  const [tex,setText] = useState("")
   
   useEffect(() => {
     getAllTask(setTask)
@@ -29,7 +29,7 @@ const Ta = ({ text}) => {
     if (matchingTask) {
       console.log(`Match found for "${searchText}": ${matchingTask._id}`);
       setTaskId(matchingTask._id)
-      setCheckedOptions(matchingTask.selectedItems);
+      setSelectedItems(matchingTask.selectedItems);
       console.log(checkedOptions)
     } else {
       console.log(`No match found for "${searchText}"`);
@@ -50,6 +50,7 @@ const Ta = ({ text}) => {
   };
 
   const handleCheckboxChange = (itemId) => {
+    
     const selectedItem = activity.find((item) => item._id === itemId);
     if (selectedItems.some((item) => item._id === itemId)) {
       // Item is already selected, so remove it
@@ -58,13 +59,21 @@ const Ta = ({ text}) => {
       // Item is not selected, so add it
       setSelectedItems((prevSelectedItems) => [...prevSelectedItems, selectedItem]);
     }
-      console.log(selectedItems)
-      console.log(taskId)
-      console.log(text)
     };
 
-
-
+    React.useEffect(() =>{
+        if (isModalOpen) {
+          if (checkedOptions.length === 0) {
+            updateTask(taskId, text, setTask, setText, setIsUpdating, selectedItems)
+          }else {
+            const checkedItems = activity.filter((item) => checkedOptions.includes(item._id));
+            const combinedItems = [...checkedItems, ...selectedItems.filter((item) => !checkedOptions.includes(item._id))];
+            setSelectedItems(combinedItems);
+            updateTask(taskId, text, setTask, setText, setIsUpdating, selectedItems)
+          }
+      } 
+      
+    }, [selectedItems]);
 
 
   return (
