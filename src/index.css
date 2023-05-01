@@ -177,9 +177,11 @@ h1{
   overflow-y: scroll;
 }
 .main{
+  width: 100%;
   display: flex;
   align-items: center;
   margin-bottom: 15px;
+  justify-content: space-between;
 }
 
 .subtask{

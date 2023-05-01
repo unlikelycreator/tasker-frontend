@@ -5,7 +5,7 @@ import { useEffect } from "react";
 //import Multiselect from 'multiselect-react-dropdown';
 
 const Ta = ({ text}) => {
-  const [checkedOptions, setCheckedOptions] = useState([]);
+  //const [checkedOptions, setCheckedOptions] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isactModalOpen, setIsactModalOpen] = useState(false);
   const [activity, setActivity] = useState([]);
@@ -30,7 +30,6 @@ const Ta = ({ text}) => {
       console.log(`Match found for "${searchText}": ${matchingTask._id}`);
       setTaskId(matchingTask._id)
       setSelectedItems(matchingTask.selectedItems);
-      console.log(checkedOptions)
     } else {
       console.log(`No match found for "${searchText}"`);
     }
@@ -63,25 +62,21 @@ const Ta = ({ text}) => {
 
     React.useEffect(() =>{
         if (isModalOpen) {
-          if (checkedOptions.length === 0) {
+
             updateTask(taskId, text, setTask, setText, setIsUpdating, selectedItems)
-          }else {
-            const checkedItems = activity.filter((item) => checkedOptions.includes(item._id));
-            const combinedItems = [...checkedItems, ...selectedItems.filter((item) => !checkedOptions.includes(item._id))];
-            setSelectedItems(combinedItems);
-            updateTask(taskId, text, setTask, setText, setIsUpdating, selectedItems)
-          }
+
       } 
       
-    }, [selectedItems]);
+    }, [selectedItems, isModalOpen,taskId,text]);
 
 
   return (
     <div className="task">
       <div className="main">
         <div className="text"><b>{text}</b></div>
+        <button onClick={openModal} className="modal-btn">Edit</button>
       </div>
-      <button onClick={openModal} className="modal-btn">Edit</button>
+      
 
 
       {isModalOpen && (
@@ -119,19 +114,6 @@ const Ta = ({ text}) => {
       )}
 
 
-
-
-              <form>
-                {checkedOptions.map((item) => (
-                  <label key={item.id}>
-                    <input
-                      type="checkbox"
-                      value={item.id}
-                    />
-                    {item.text}
-                  </label>
-                ))}
-              </form>
               {selectedItems.map((item, index) => (
                   <p key={index}>{item.text}</p>
                 ))}
@@ -140,9 +122,10 @@ const Ta = ({ text}) => {
        
           <button onClick={closeModal} className="modal-btn">Close</button>
           
-          
         </div>
+        
       )}
+      {tex}, {isUpdating}
     </div>
   );
 };
