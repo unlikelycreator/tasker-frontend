@@ -24,6 +24,7 @@ const Ta = ({ text}) => {
 
   const openModal = (event) => {
     setIsModalOpen(true);
+    setIsactModalOpen(true)
     const searchText = text;
     const matchingTask = task.find((task) => task.text === searchText);
     if (matchingTask) {
@@ -34,20 +35,22 @@ const Ta = ({ text}) => {
       console.log(`No match found for "${searchText}"`);
     }
   };
-
+/*
   const openModalact = (e) => {
     e.preventDefault();
     setIsactModalOpen(true);
-  };
+  };*/
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setIsactModalOpen(false)
   };
+  /*
   const closeactModal = (e) => {
     e.preventDefault();
     setIsactModalOpen(false);
   };
-
+*/
   const handleCheckboxChange = (itemId) => {
     
     const selectedItem = activity.find((item) => item._id === itemId);
@@ -89,7 +92,6 @@ const Ta = ({ text}) => {
             <div className="modal-body">
               <div className="modal-top">
                 <h2>Items</h2>
-                <button onClick={openModalact} className="modal-btn2">+</button>
               </div>
 
                         {isactModalOpen && (
@@ -109,7 +111,7 @@ const Ta = ({ text}) => {
                                 </div>
                               </div>
                           </form>
-          <button onClick={closeactModal} className="modal-btn">Close</button>
+          <button onClick={closeModal} className="modal-btn">Close</button>
         </div>
       )}
 
@@ -120,7 +122,7 @@ const Ta = ({ text}) => {
             </div>
     </form>
        
-          <button onClick={closeModal} className="modal-btn">Close</button>
+         
           
         </div>
         
