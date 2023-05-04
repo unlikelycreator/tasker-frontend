@@ -63,15 +63,22 @@ const Ta = ({ text}) => {
     }
     };
 
+    const handleSave = (e) => {
+        e.preventDefault();
+        setIsModalOpen(false);
+        setIsactModalOpen(false)
+        if (isModalOpen) {
+            updateTask(taskId, text, setTask, setText, setIsUpdating, selectedItems)
+        }
+    };
+/*
     React.useEffect(() =>{
         if (isModalOpen) {
-
             updateTask(taskId, text, setTask, setText, setIsUpdating, selectedItems)
-
       } 
       
     }, [selectedItems, isModalOpen,taskId,text]);
-
+*/
 
   return (
     <div className="task">
@@ -79,8 +86,6 @@ const Ta = ({ text}) => {
         <div className="text"><b>{text}</b></div>
         <button onClick={openModal} className="modal-btn">Edit</button>
       </div>
-      
-
 
       {isModalOpen && (
         <div className="modal">
@@ -111,7 +116,7 @@ const Ta = ({ text}) => {
                                 </div>
                               </div>
                           </form>
-          <button onClick={closeModal} className="modal-btn">Close</button>
+          <button onClick={handleSave} className="modal-btn">Save</button>
         </div>
       )}
 
@@ -122,7 +127,7 @@ const Ta = ({ text}) => {
             </div>
     </form>
        
-         
+         <button onClick={closeModal} className="modal-btn">Close</button>
           
         </div>
         
