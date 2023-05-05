@@ -5,34 +5,44 @@ import Ta from './component/taskActivity'
 import { addTask, getAllTask, updateTask, deleteTask, addActivity, getAllActivity, updateActivity, deleteActivity} from "./utils/HandleApi";
 import { getAllItems, addItem, updateItem, deleteItem } from "./utils/HandleApi";
 import { getAllCustomers, addCustomer, updateCustomer, deleteCustomer } from "./utils/HandleApi";
-import { AiFillProject } from 'react-icons/ai';
-import { AiFillCheckCircle } from 'react-icons/ai';
-import { AiFillSchedule } from 'react-icons/ai'
-import { AiFillCreditCard } from 'react-icons/ai'
+import { AiFillSchedule, AiOutlineClose, AiOutlineShoppingCart , AiFillCheckCircle, AiFillProject, AiFillDelete } from 'react-icons/ai'
+import { HiOutlineMenu } from 'react-icons/hi'
 import {BiEdit} from "react-icons/bi"
-import {AiFillDelete} from "react-icons/ai"
-
-
-
+import { BsFillPersonFill } from 'react-icons/bs';
 
 import "./css/Item.css"
+import "./css/Menu.css"
+
+
+
 function App() {
   const [activeScreen, setActiveScreen] = useState('task');
+  const [menuOpen, setMenuOpen] = useState(false);
 
+  function handleMenuClick(screen) {
+    setActiveScreen(screen);
+    setMenuOpen(false);
+  }
+
+  function toggleMenu() {
+    setMenuOpen(!menuOpen);
+  }
+  /*
   const handleMenuClick = (screenName) => {
     setActiveScreen(screenName);
   }
-
+*/ 
   return (
     <div className="app-container">
-      <div className="menu-container">
+      <button className="menu-toggle" onClick={toggleMenu}><span>{menuOpen ? <AiOutlineClose size={20} /> : <HiOutlineMenu  size={20} />}</span></button>
+      <div className={`menu-container ${menuOpen ? 'open' : ''}`}>
        <h1>Tasker</h1>
        <div className="menu-buttons">
           <button className={activeScreen === 'task' ? 'active' : ''} onClick={() => handleMenuClick('task')}> <AiFillSchedule size={20}/> &nbsp; Tasks </button>
           <button className={activeScreen === 'activity' ? 'active' : ''} onClick={() => handleMenuClick('activity')}> <AiFillCheckCircle size={20}/>&nbsp; Activities </button>
           <button className={activeScreen === 'taskac' ? 'active' : ''} onClick={() => handleMenuClick('taskac')}><AiFillProject size={20}/>&nbsp;Task-Activity</button>
-          <button className={activeScreen === 'items' ? 'active' : ''} onClick={() => handleMenuClick('items')}><AiFillCreditCard size={20}/>&nbsp; Items</button>
-          <button className={activeScreen === 'customer' ? 'active' : ''} onClick={() => handleMenuClick('customer')}><AiFillCreditCard size={20}/>&nbsp; Customers</button>
+          <button className={activeScreen === 'items' ? 'active' : ''} onClick={() => handleMenuClick('items')}><AiOutlineShoppingCart size={20}/>&nbsp; Items</button>
+          <button className={activeScreen === 'customer' ? 'active' : ''} onClick={() => handleMenuClick('customer')}><BsFillPersonFill size={20}/>&nbsp; Customers</button>
         </div>
       </div>
       <div className="screen-container">
@@ -300,8 +310,8 @@ function CustomerScreen() {
           <h1>Customers</h1>
           <div className="item-input">
             <div className="item-input">
-              <input className="input-box" type="text" value={customerName} placeholder="Name" onChange={(e) => setcustomerName(e.target.value)} />
-              <input className="input-box" type="text" value={customerAddress} placeholder="Address" onChange={(e) => setcustomeAddress(e.target.value)} />
+              <input className="input-box" type="text" value={customerName} placeholder="Item Name" onChange={(e) => setcustomerName(e.target.value)} />
+              <input className="input-box" type="text" value={customerAddress} placeholder="Item Description" onChange={(e) => setcustomeAddress(e.target.value)} />
           </div>
               <button className="item-save-button" onClick={ isUpdating ? 
               () => updateCustomer(customerId, customerName, customerAddress, setCustomers, setcustomerName, setcustomeAddress, setIsUpdating)

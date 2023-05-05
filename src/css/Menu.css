@@ -1,0 +1,105 @@
+
+.menu-toggle {
+    position: fixed;
+    top: 10px;
+    left: 20px;
+    z-index: 100;
+    background-color: transparent;
+    border: none
+}
+
+.menu-toggle span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    background-color: #212121;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+.menu-toggle span:hover{
+    background-color: #3e8eff;
+}
+
+.menu-toggle svg {
+    color: #ffffff;
+}
+
+.menu-toggle svg:hover {
+    color: #000000;
+}
+  
+.menu-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 300px;
+    padding: 40px 20px;
+    background-color: #fff;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+}
+  
+.menu-container.open {
+    transform: translateX(0%);
+}
+  
+.menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.menu-container h1{
+    font-size: 50px;
+    margin-bottom: 40px;
+}
+  
+.menu-close {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+  
+.menu-close svg {
+    color: #333;
+}
+  
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+  
+.menu-buttons button {
+    display: flex;
+    align-items: center;
+    height: 60px;
+    gap: 20px;
+    padding: 0 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: transparent;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    font-size: 18px;
+}
+  
+.menu-buttons button.active,
+.menu-buttons button:hover {
+    background-color: #3e8eff;
+    color: white;
+}
+  
