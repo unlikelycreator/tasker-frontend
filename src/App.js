@@ -244,7 +244,7 @@ function ItemsScreen() {
           </div>
               <button className="item-save-button" onClick={ isUpdating ? 
               () => updateItem(itemId, itemName, itemDescription, itemPrice, setItems, setitemName, setitemDescription, setitemPrice, setIsUpdating)
-              : () => addItem(itemName, itemDescription, itemPrice ,setItems)}>
+              : () => addItem(itemName, itemDescription, itemPrice, setItems, setitemName, setitemDescription, setitemPrice, setItems)}>
                 {isUpdating ? "Update": "Add"}</button>
           </div>
           <table>

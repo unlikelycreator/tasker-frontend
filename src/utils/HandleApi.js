@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-const baseurl = "https://tasker-backend.onrender.com/tasks"
-const baseurlac = "https://tasker-backend.onrender.com/activities"
-const baseurlItem = "https://tasker-backend.onrender.com/item"
+const baseurl = "http://localhost:5000/tasks"
+const baseurlac = "http://localhost:5000/activities"
+const baseurlItem = "http://localhost:5000/item"
 /*https://tasker-backend.onrender.com*/
 
 /*Get*/
@@ -56,12 +56,15 @@ const addActivity = (acttext, setacttext, setActivity) =>{
     }).catch((err) => console.log(err))
 }
 
-const addItem = (itemName, itemDescription, itemPrice, setItems) =>{
+const addItem = (itemName, itemDescription, itemPrice, setitemName, setitemDescription, setitemPrice, setItems) =>{
   axios
   .post(`${baseurlItem}/save`,{itemName: itemName, itemDescription: itemDescription, itemPrice: itemPrice, setItems})
   .then((data) =>{
       console.log(data);
       getAllItems(setItems)
+      setitemName("")
+      setitemDescription("")
+      setitemPrice([])
   }).catch((err) => console.log(err))
 }
 
