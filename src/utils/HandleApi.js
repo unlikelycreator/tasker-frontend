@@ -1,9 +1,9 @@
 import axios from 'axios'
 
-const baseurl = "http://localhost:5000/tasks"
-const baseurlac = "http://localhost:5000/activities"
-const baseurlItem = "http://localhost:5000/item"
-const baseurlcust= "http://localhost:5000/customer"
+const baseurl = "https://tasker-backend.onrender.com/tasks"
+const baseurlac = "https://tasker-backend.onrender.com/activities"
+const baseurlItem = "https://tasker-backend.onrender.com/item"
+const baseurlcust= "https://tasker-backend.onrender.com/customer"
 /*https://tasker-backend.onrender.com*/
 
 /*Get*/
