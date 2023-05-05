@@ -1,9 +1,11 @@
 import axios from 'axios'
 
-const baseurl = "https://tasker-backend.onrender.com/tasks"
-const baseurlac = "https://tasker-backend.onrender.com/activities"
-
+const baseurl = "http://localhost:5000/tasks"
+const baseurlac = "http://localhost:5000/activities"
+const baseurlItem = "http://localhost:5000/item"
 /*https://tasker-backend.onrender.com*/
+
+/*Get*/
 const getAllTask = (setTask) => {
     axios
     .get(baseurl)
@@ -22,8 +24,17 @@ const getAllActivity = (setActivity) => {
     })
 }
 
+const getAllItems = (setItems) => {
+  axios
+  .get(baseurlItem)
+  .then(({data}) =>{
+      console.log('data -->', data);
+      setItems(data)
+  })
+}
 
 
+/*Add*/
 const addTask = (text, setText, setTask) =>{
     axios
     .post(`${baseurl}/save`,{text})
@@ -45,7 +56,16 @@ const addActivity = (acttext, setacttext, setActivity) =>{
     }).catch((err) => console.log(err))
 }
 
+const addItem = (itemName, itemDescription, itemPrice, setItems) =>{
+  axios
+  .post(`${baseurlItem}/save`,{itemName: itemName, itemDescription: itemDescription, itemPrice: itemPrice, setItems})
+  .then((data) =>{
+      console.log(data);
+      getAllItems(setItems)
+  }).catch((err) => console.log(err))
+}
 
+/*Update*/
 const updateTask = (taskId, text, setTask, setText, setIsUpdating, selectedItems) =>{
     axios
     .post(`${baseurl}/update`,{_id: taskId, text, selectedItems})
@@ -58,16 +78,6 @@ const updateTask = (taskId, text, setTask, setText, setIsUpdating, selectedItems
     .catch((err) => console.log(err))
 }
 
-const updateTaskta = (taskId,setTask, selectedOptions) =>{
-  axios
-    .post(`${baseurl}/update`,{_id: taskId, selectedOptions: selectedOptions})
-    .then((data) =>{
-      getAllTask(setTask)
-    })
-    .catch((err) => console.log(err))
-}
-
-
 const updateActivity = (ActivityID, acttext, setActivity, setText, setIsUpdating) =>{
     axios
     .post(`${baseurlac}/update`,{_id: ActivityID, text: acttext})
@@ -79,29 +89,21 @@ const updateActivity = (ActivityID, acttext, setActivity, setText, setIsUpdating
     .catch((err) => console.log(err))
 }
 
-/*
-const addTA = (selectedTask, selectedOptions, setAllData) => {
-      axios
-        .post(`${baseurlta}/save`,{ task: selectedTask, selectedOptions })
-        .then(data => {
-          console.log(data);
-          getAllTA(setAllData);
-        })
-        .catch(err => console.log(err));
-    }
-
-
-const updateTA = (selectedTask, selectedOptions, setAllData, taID) => {
-    axios
-    .post(`${baseurlta}/update`,{_id: taID,task: selectedTask,selectedOptions: selectedOptions.every(
-        (option, index) => option.text === selectedOptions[index].text
-      )})
-    .then((data) =>{
+const updateItem = (itemId, itemName, itemDescription, itemPrice, setItem, setitemName, setitemDescription, setitemPrice, setIsUpdating) =>{
+  axios
+  .post(`${baseurlItem}/update`,{_id: itemId, itemName: itemName, itemDescription: itemDescription, itemPrice: itemPrice})
+  .then((data) =>{
         console.log(data)
-        getAllTA(setAllData)
-    })
-    .catch((err) => console.log(err))
-};*/
+        setitemName("")
+        setitemDescription("")
+        setitemPrice([])
+        setIsUpdating(false)
+        getAllItems(setItem)
+  })
+  .catch((err) => console.log(err))
+}
+
+/*Delete*/
 
 const deleteTask = (_id, setTask) =>{
     axios
@@ -122,63 +124,17 @@ const deleteActivity = (_id, setActivity) =>{
     })
     .catch((err) => console.log(err))
 }
-/*
-const getAllTA = (setAllData) => {
-    axios
-    .get(baseurlta)
-    .then(({data}) =>{
-        console.log('data -->', data);
-        setAllData(data)
-    })
-}
-const addTA = (selectedTask, selectedOptions, setAllData, allData) => {
-    // check if selectedTask and selectedOptions already exist in allData state
-    const taskExists = allData.some(
-      task =>
-        task.task === selectedTask &&
-        task.selectedOptions.length === selectedOptions.length &&
-        task.selectedOptions.every(
-          (option, index) => option.text === selectedOptions[index].text
-        )
-    );
-    if (taskExists) {
-      const existingTask = allData.find(
-        task =>
-          task.task === selectedTask &&
-          task.selectedOptions.length === selectedOptions.length &&
-          task.selectedOptions.every(
-            (option, index) => option.text === selectedOptions[index].text
-          )
-      );
-      axios
-        .put(`${baseurlta}/update/${existingTask._id}`, {
-          selectedOptions,
-        })
-        .then(data => {
-          console.log(data);
-          getAllTA(setAllData);
-        })
-        .catch(err => console.log(err));
-    } else {
-      axios
-        .post(`${baseurlta}/save`, { task: selectedTask, selectedOptions })
-        .then(data => {
-          console.log(data);
-          getAllTA(setAllData);
-        })
-        .catch(err => console.log(err));
-    }
-  };
-const deleteTA = (_id, setAllData) =>{
-    axios
-    .post(`${baseurlta}/delete`,{_id: _id})
-    .then((data) =>{
-        console.log(data)
-        getAllTA(setAllData)
-    })
-    .catch((err) => console.log(err))
+
+const deleteItem = (_id, setItems) =>{
+  axios
+  .post(`${baseurlItem}/delete`,{_id: _id})
+  .then((data) =>{
+      console.log(data)
+      getAllItems(setItems)
+      console.log("Item deleted successfully")
+  })
+  .catch((err) => console.log(err))
 }
 
-*/
 
-export {getAllTask, addTask, updateTask, updateTaskta, deleteTask, getAllActivity, addActivity, updateActivity, deleteActivity}
+export {getAllTask, addTask, updateTask, deleteTask, getAllActivity, addActivity, updateActivity, deleteActivity, getAllItems, addItem, updateItem, deleteItem}

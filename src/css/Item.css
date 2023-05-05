@@ -1,0 +1,85 @@
+.item-container{
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.item-top{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 50px;
+}
+
+.item-input {
+  width: 90%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  margin: 10px 0;
+  flex-grow: 1;
+}
+
+.input-box {
+  border: none;
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 16px;
+  color: #333;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 10px;
+}
+
+.input-box:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.item-save-button {
+  border: none;
+  background-color: #333;
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.item-save-button:hover {
+  background-color: #444;
+}
+
+  table {
+    border-collapse: collapse;
+    width: 90%;
+    margin: 0 auto;
+  }
+  
+  thead {
+    background-color: #000;
+    color: #fff;
+  }
+  
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+
+  @media (max-width: 991.98px){
+  	.item-input{
+      align-items: center;
+      justify-content: center;
+    }
+  }

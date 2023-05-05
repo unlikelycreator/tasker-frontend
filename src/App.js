@@ -3,32 +3,50 @@ import Task from "./component/Task"
 import Activity from "./component/Activity"
 import Ta from './component/taskActivity'
 import { addTask, getAllTask, updateTask, deleteTask, addActivity, getAllActivity, updateActivity, deleteActivity} from "./utils/HandleApi";
-//import Multiselect from 'multiselect-react-dropdown';
+import { getAllItems, addItem, updateItem, deleteItem } from "./utils/HandleApi";
+import { AiFillProject } from 'react-icons/ai';
+import { AiFillCheckCircle } from 'react-icons/ai';
+import { AiFillSchedule } from 'react-icons/ai'
+import { AiFillCreditCard } from 'react-icons/ai'
+import {BiEdit} from "react-icons/bi"
+import {AiFillDelete} from "react-icons/ai"
 
 
+
+
+
+
+
+
+
+
+
+
+
+import "./css/Item.css"
 function App() {
   const [activeScreen, setActiveScreen] = useState('task');
-
-
 
   const handleMenuClick = (screenName) => {
     setActiveScreen(screenName);
   }
 
-
-
   return (
     <div className="app-container">
       <div className="menu-container">
-       <h1>Menu</h1>
-        <button className={activeScreen === 'task' ? 'active' : ''} onClick={() => handleMenuClick('task')}>Tasks</button>
-        <button className={activeScreen === 'activity' ? 'active' : ''} onClick={() => handleMenuClick('activity')}>Activities</button>
-        <button className={activeScreen === 'taskac' ? 'active' : ''} onClick={() => handleMenuClick('taskac')}>Task-Activity</button>
+       <h1>Tasker</h1>
+       <div className="menu-buttons">
+          <button className={activeScreen === 'task' ? 'active' : ''} onClick={() => handleMenuClick('task')}> <AiFillSchedule size={20}/> &nbsp; Tasks </button>
+          <button className={activeScreen === 'activity' ? 'active' : ''} onClick={() => handleMenuClick('activity')}> <AiFillCheckCircle size={20}/>&nbsp; Activities </button>
+          <button className={activeScreen === 'taskac' ? 'active' : ''} onClick={() => handleMenuClick('taskac')}><AiFillProject size={20}/>&nbsp;Task-Activity</button>
+          <button className={activeScreen === 'items' ? 'active' : ''} onClick={() => handleMenuClick('items')}><AiFillCreditCard size={20}/>&nbsp; Items</button>
+        </div>
       </div>
       <div className="screen-container">
         {activeScreen === 'task' && <TaskScreen />}
         {activeScreen === 'activity' && <ActivityScreen />}
         {activeScreen === 'taskac' && <TaskAcScreen />}
+        {activeScreen === 'items' && <ItemsScreen />}
       </div>
     </div>
   );
@@ -156,4 +174,107 @@ function TaskAcScreen() {
     </div>
   );
 }
+
+function ItemsScreen() {
+    const [items, setItems] = useState([]);
+   // const [totalAmount, setTotalAmount] = useState(0);
+    const [itemName, setitemName] = useState("")
+    const [itemDescription, setitemDescription] = useState("")
+    const [itemPrice, setitemPrice] = useState([])
+    const[isUpdating, setIsUpdating] = useState(false)
+    const[itemId, setitemId] = useState([])
+    useEffect(() => {
+      getAllItems(setItems);
+    }, [])
+
+    /*
+    function handleQuantityChange(e, itemId) {
+      const updatedItems = items.map((item) => {
+        if (item._id === itemId) {
+          return {
+            ...item,
+            quantity: e.target.value,
+            total: e.target.value * item.itemPrice,
+          };
+        } else {
+          return item;
+        }
+      });
+    
+      setItems(updatedItems);
+    
+      const newTotalAmount = updatedItems.reduce((total, item) => {
+        return total + item.total;
+      }, 0);
+    
+      setTotalAmount(newTotalAmount);
+    }
+
+    const handleItemUpdate = (e, itemId, name, desc, price) =>{
+        e.preventDefault();
+        console.log(itemId)
+        setitemName(name)
+        console.log(name, desc, price)
+        setitemDescription(desc)
+        setitemPrice(price)
+    }*/
+
+    const handleItemdelete = (e, _id) =>{
+      e.preventDefault();
+      deleteItem(_id, setItems)
+    }
+
+    const updateMode = (itemId, name, desc, price) =>{
+      setIsUpdating(true)
+      setitemId(itemId)
+      setitemName(name)
+      setitemDescription(desc)
+      setitemPrice(price)
+    }
+    
+    return (
+      <div className="screen">
+        <div className="item-container" >
+          <h1>Items</h1>
+          <div className="item-input">
+            <div className="item-input">
+              <input className="input-box" type="text" value={itemName} placeholder="Item Name" onChange={(e) => setitemName(e.target.value)} />
+              <input className="input-box" type="text" value={itemDescription} placeholder="Item Description" onChange={(e) => setitemDescription(e.target.value)} />
+              <input className="input-box" type="text" value={itemPrice} placeholder="Item Price" onChange={(e) => setitemPrice(e.target.value)} />
+          </div>
+              <button className="item-save-button" onClick={ isUpdating ? 
+              () => updateItem(itemId, itemName, itemDescription, itemPrice, setItems, setitemName, setitemDescription, setitemPrice, setIsUpdating)
+              : () => addItem(itemName, itemDescription, itemPrice ,setItems)}>
+                {isUpdating ? "Update": "Add"}</button>
+          </div>
+          <table>
+              <thead>
+                <tr>
+                  <th>Item Name</th>
+                  <th>Item Description</th>
+                  <th>Item Price</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item) => (
+                <tr key={item._id}>
+                  <td>{item.itemName}</td>
+                  <td>{item.itemDescription}</td>
+                  <td>{item.itemPrice}</td>
+                  <td>
+                  <BiEdit className='icon' onClick={() => updateMode(item._id, item.itemName, item.itemDescription, item.itemPrice)}/>
+                  </td>
+                  <td><AiFillDelete className='icon' onClick={(e) => handleItemdelete(e,item._id )} /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+      </div>
+    </div>
+  );
+}
+
+
 export default App;
