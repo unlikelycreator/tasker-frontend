@@ -3,6 +3,7 @@ import axios from 'axios'
 const baseurl = "http://localhost:5000/tasks"
 const baseurlac = "http://localhost:5000/activities"
 const baseurlItem = "http://localhost:5000/item"
+const baseurlcust= "http://localhost:5000/customer"
 /*https://tasker-backend.onrender.com*/
 
 /*Get*/
@@ -33,6 +34,14 @@ const getAllItems = (setItems) => {
   })
 }
 
+const getAllCustomers = (setCustomers) => {
+    axios
+    .get(baseurlcust)
+    .then(({data}) =>{
+        console.log('data -->', data);
+        setCustomers(data)
+    })
+  }
 
 /*Add*/
 const addTask = (text, setText, setTask) =>{
@@ -67,6 +76,18 @@ const addItem = (itemName, itemDescription, itemPrice, setitemName, setitemDescr
       setitemPrice([])
   }).catch((err) => console.log(err))
 }
+
+const addCustomer = (customerName, customerAddress, setcustomerName, setcustomeAddress, setCustomers) =>{
+    axios
+    .post(`${baseurlcust}/save`,{name: customerName, address: customerAddress})
+    .then((data) =>{
+        console.log(data);
+        getAllCustomers(setCustomers)
+        setcustomerName("")
+        setcustomeAddress("")
+    }).catch((err) => console.log(err))
+  }
+
 
 /*Update*/
 const updateTask = (taskId, text, setTask, setText, setIsUpdating, selectedItems) =>{
@@ -106,6 +127,18 @@ const updateItem = (itemId, itemName, itemDescription, itemPrice, setItem, setit
   .catch((err) => console.log(err))
 }
 
+const updateCustomer = (customerId, customerName, customerAddress, setCustomers, setcustomerName, setcustomeAddress, setIsUpdating) =>{
+    axios
+    .post(`${baseurlcust}/update`,{_id: customerId, name: customerName, address: customerAddress})
+    .then((data) =>{
+          console.log(data)
+          setcustomerName("")
+          setcustomeAddress("")
+          setIsUpdating(false)
+          getAllCustomers(setCustomers)
+    })
+    .catch((err) => console.log(err))
+  }
 /*Delete*/
 
 const deleteTask = (_id, setTask) =>{
@@ -139,5 +172,16 @@ const deleteItem = (_id, setItems) =>{
   .catch((err) => console.log(err))
 }
 
+const deleteCustomer = (_id, setCustomers) =>{
+    axios
+    .post(`${baseurlcust}/delete`,{_id: _id})
+    .then((data) =>{
+        console.log(data)
+        getAllCustomers(setCustomers)
+        console.log("Customer deleted successfully")
+    })
+    .catch((err) => console.log(err))
+  }
 
-export {getAllTask, addTask, updateTask, deleteTask, getAllActivity, addActivity, updateActivity, deleteActivity, getAllItems, addItem, updateItem, deleteItem}
+export {getAllTask, addTask, updateTask, deleteTask, getAllActivity, addActivity, updateActivity, deleteActivity, 
+    getAllItems, addItem, updateItem, deleteItem, getAllCustomers,addCustomer, updateCustomer, deleteCustomer}

@@ -4,21 +4,13 @@ import Activity from "./component/Activity"
 import Ta from './component/taskActivity'
 import { addTask, getAllTask, updateTask, deleteTask, addActivity, getAllActivity, updateActivity, deleteActivity} from "./utils/HandleApi";
 import { getAllItems, addItem, updateItem, deleteItem } from "./utils/HandleApi";
+import { getAllCustomers, addCustomer, updateCustomer, deleteCustomer } from "./utils/HandleApi";
 import { AiFillProject } from 'react-icons/ai';
 import { AiFillCheckCircle } from 'react-icons/ai';
 import { AiFillSchedule } from 'react-icons/ai'
 import { AiFillCreditCard } from 'react-icons/ai'
 import {BiEdit} from "react-icons/bi"
 import {AiFillDelete} from "react-icons/ai"
-
-
-
-
-
-
-
-
-
 
 
 
@@ -40,6 +32,7 @@ function App() {
           <button className={activeScreen === 'activity' ? 'active' : ''} onClick={() => handleMenuClick('activity')}> <AiFillCheckCircle size={20}/>&nbsp; Activities </button>
           <button className={activeScreen === 'taskac' ? 'active' : ''} onClick={() => handleMenuClick('taskac')}><AiFillProject size={20}/>&nbsp;Task-Activity</button>
           <button className={activeScreen === 'items' ? 'active' : ''} onClick={() => handleMenuClick('items')}><AiFillCreditCard size={20}/>&nbsp; Items</button>
+          <button className={activeScreen === 'customer' ? 'active' : ''} onClick={() => handleMenuClick('customer')}><AiFillCreditCard size={20}/>&nbsp; Customers</button>
         </div>
       </div>
       <div className="screen-container">
@@ -47,6 +40,7 @@ function App() {
         {activeScreen === 'activity' && <ActivityScreen />}
         {activeScreen === 'taskac' && <TaskAcScreen />}
         {activeScreen === 'items' && <ItemsScreen />}
+        {activeScreen === 'customer' && <CustomerScreen />}
       </div>
     </div>
   );
@@ -276,5 +270,69 @@ function ItemsScreen() {
   );
 }
 
+function CustomerScreen() {
+  const [customers, setCustomers] = useState([]);
+ // const [totalAmount, setTotalAmount] = useState(0);
+  const [customerName, setcustomerName] = useState("")
+  const [customerAddress, setcustomeAddress] = useState("")
+  const[isUpdating, setIsUpdating] = useState(false)
+  const[customerId, setcustomerId] = useState([])
+
+  useEffect(() => {
+    getAllCustomers(setCustomers);
+  }, [])
+
+  const handleCustomerdelete = (e, _id) =>{
+    e.preventDefault();
+    deleteCustomer(_id, setCustomers)
+  }
+
+  const updateMode = (customerId, name, address) =>{
+    setIsUpdating(true)
+    setcustomerId(customerId)
+    setcustomerName(name)
+    setcustomeAddress(address)
+  }
+  
+  return (
+      <div className="screen">
+        <div className="item-container" >
+          <h1>Customers</h1>
+          <div className="item-input">
+            <div className="item-input">
+              <input className="input-box" type="text" value={customerName} placeholder="Item Name" onChange={(e) => setcustomerName(e.target.value)} />
+              <input className="input-box" type="text" value={customerAddress} placeholder="Item Description" onChange={(e) => setcustomeAddress(e.target.value)} />
+          </div>
+              <button className="item-save-button" onClick={ isUpdating ? 
+              () => updateCustomer(customerId, customerName, customerAddress, setCustomers, setcustomerName, setcustomeAddress, setIsUpdating)
+              : () => addCustomer(customerName, customerAddress, setcustomerName, setcustomeAddress, setCustomers)}>
+                {isUpdating ? "Update": "Add"}</button>
+          </div>
+          <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Address</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              {customers.map((item) => (
+                <tr key={item._id}>
+                  <td>{item.name}</td>
+                  <td>{item.address}</td>
+                  <td>
+                  <BiEdit className='icon' onClick={() => updateMode(item._id, item.name, item.address)}/>
+                  </td>
+                  <td><AiFillDelete className='icon' onClick={(e) => handleCustomerdelete(e,item._id )} /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+      </div>
+    </div>
+  );
+}
 
 export default App;
