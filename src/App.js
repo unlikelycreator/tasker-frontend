@@ -300,8 +300,8 @@ function CustomerScreen() {
           <h1>Customers</h1>
           <div className="item-input">
             <div className="item-input">
-              <input className="input-box" type="text" value={customerName} placeholder="Item Name" onChange={(e) => setcustomerName(e.target.value)} />
-              <input className="input-box" type="text" value={customerAddress} placeholder="Item Description" onChange={(e) => setcustomeAddress(e.target.value)} />
+              <input className="input-box" type="text" value={customerName} placeholder="Name" onChange={(e) => setcustomerName(e.target.value)} />
+              <input className="input-box" type="text" value={customerAddress} placeholder="Address" onChange={(e) => setcustomeAddress(e.target.value)} />
           </div>
               <button className="item-save-button" onClick={ isUpdating ? 
               () => updateCustomer(customerId, customerName, customerAddress, setCustomers, setcustomerName, setcustomeAddress, setIsUpdating)
