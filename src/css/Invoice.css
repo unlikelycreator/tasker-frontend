@@ -21,8 +21,8 @@
 .invoice-modal {
     position: fixed;
     top: 50%;
-    left: 40%;
-    transform: translate(-20%, -50%);
+    left: 50%;
+    transform: translate(-50%, -50%);
     background-color: white;
     max-width: 100%;
     padding: 20px;
@@ -98,6 +98,7 @@
     width: 100%;
     overflow-x: auto;
     margin-bottom: 20px;
+    max-height: 450px;
 }
 
 .invoice-table {
@@ -208,3 +209,32 @@
     transform: scale(1);
     background-color: #4f4f4f;
 }
+
+
+@media only screen and (max-width: 600px) {
+    .invoice-table-header,
+    .invoice-table-cell,
+    .invoice-table-footer {
+      display: block;
+      width: 100%;
+      text-align: center;
+    }
+  
+    .invoice-table-header {
+      font-size: 1.2em;
+    }
+  
+    .invoice-table-cell {
+      font-size: 1em;
+      border-bottom: 1px solid #ddd;
+      padding: 5px;
+    }
+  
+    .amount-cell {
+      font-weight: bold;
+    }
+  
+    .add-row {
+      margin-top: 10px;
+    }
+  }
