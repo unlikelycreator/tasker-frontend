@@ -1,17 +1,24 @@
 import { useEffect, useState } from "react";
+//Components import
 import Task from "./component/Task"
 import Activity from "./component/Activity"
 import Ta from './component/taskActivity'
+
+//Call Functions Import
 import { addTask, getAllTask, updateTask, deleteTask, addActivity, getAllActivity, updateActivity, deleteActivity} from "./utils/HandleApi";
 import { getAllItems, addItem, updateItem, deleteItem } from "./utils/HandleApi";
 import { getAllCustomers, addCustomer, updateCustomer, deleteCustomer } from "./utils/HandleApi";
+
+//Icons Import
 import { AiFillSchedule, AiOutlineClose, AiOutlineShoppingCart , AiFillCheckCircle, AiFillProject, AiFillDelete } from 'react-icons/ai'
 import { HiOutlineMenu } from 'react-icons/hi'
 import {BiEdit} from "react-icons/bi"
 import { BsFillPersonFill } from 'react-icons/bs';
 
+//CSS import
 import "./css/Item.css"
 import "./css/Menu.css"
+import "./css/Invoice.css"
 
 
 
@@ -43,6 +50,7 @@ function App() {
           <button className={activeScreen === 'taskac' ? 'active' : ''} onClick={() => handleMenuClick('taskac')}><AiFillProject size={20}/>&nbsp;Task-Activity</button>
           <button className={activeScreen === 'items' ? 'active' : ''} onClick={() => handleMenuClick('items')}><AiOutlineShoppingCart size={20}/>&nbsp; Items</button>
           <button className={activeScreen === 'customer' ? 'active' : ''} onClick={() => handleMenuClick('customer')}><BsFillPersonFill size={20}/>&nbsp; Customers</button>
+          <button className={activeScreen === 'invoice' ? 'active' : ''} onClick={() => handleMenuClick('invoice')}><BsFillPersonFill size={20}/>&nbsp; Invoice</button>
         </div>
       </div>
       <div className="screen-container">
@@ -51,6 +59,7 @@ function App() {
         {activeScreen === 'taskac' && <TaskAcScreen />}
         {activeScreen === 'items' && <ItemsScreen />}
         {activeScreen === 'customer' && <CustomerScreen />}
+        {activeScreen === 'invoice' && <InvoiceScreen />}
       </div>
     </div>
   );
@@ -345,4 +354,205 @@ function CustomerScreen() {
   );
 }
 
+
+function InvoiceScreen() {
+  const[items, setItems] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const[isUpdating, setIsUpdating] = useState(false)
+  const[customerId, setcustomerId] = useState([])
+  const [invoiceNumber, setInvoiceNumber] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [quantity, setQuantity] = useState(0);
+  const [amount, setAmount] = useState(0);
+  const [tableRows, setTableRows] = useState([])
+  const [rows, setRows] = useState([{ item: '', quantity: 0, price: 0, amount: 0 }]);
+  useEffect(() => {
+    getAllCustomers(setCustomers);
+    getAllItems(setItems)
+    const randomNumber = Math.floor(10000000 + Math.random() * 90000000);
+
+    // Set generated number as invoice number
+    setInvoiceNumber(randomNumber.toString());
+  }, [])
+
+  const handleItemSelect = (event) => {
+    const selectedItemName = event.target.value;
+    const selectedItem = items.find((item) => item.itemName === selectedItemName);
+    setSelectedItem(selectedItem);
+  };
+
+  const handleQuantityChange = (event) => {
+    const quantity = parseInt(event.target.value);
+    setQuantity(quantity);
+    setAmount(quantity * selectedItem?.itemPrice || 0);
+  };
+
+  const handleInvoiceDelete = (e, _id) =>{
+    e.preventDefault();
+    deleteCustomer(_id, setCustomers)
+  }
+
+  const updateMode = (customerId, name, address) =>{
+    setIsUpdating(true)
+  }
+  const openModal = (event) => {
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+      const addRow = () => {
+        const newRow = (
+          <tr>
+            <td className="invoice-table-cell">2</td>
+            <td className="invoice-table-cell">
+              <select
+                className="invoice-select item-select"
+                value={selectedItem?.itemName || ''}
+                onChange={handleItemSelect}
+              >
+                <option value="">Select an item</option>
+                {items.map(item => (
+                  <option key={item.itemName} value={item.itemName}>{item.itemName}</option>
+                ))}
+              </select>
+            </td>
+            <td className="invoice-table-cell">
+              <input
+                type="number"
+                className="invoice-input quantity-input"
+                value={quantity}
+                onChange={handleQuantityChange}
+              />
+            </td>
+            <td className="invoice-table-cell">
+              <input
+                type="number"
+                className="invoice-input price-input"
+                value={selectedItem?.itemPrice || ''}
+                readOnly={!!selectedItem}
+              />
+            </td>
+            <td className="invoice-table-cell amount-cell">{amount}</td>
+          </tr>
+        );
+        setTableRows([...tableRows, newRow]);
+      };
+  return (
+      <div className="screen">
+          <h1>Invoice Screen</h1>
+          <div className="invoice-screen">
+              <div className="invoice-table">
+                <table>
+                  <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {customers.map((item) => (
+                      <tr key={item._id}>
+                        <td>{item.name}</td>
+                        <td>{item.address}</td>
+                        <td>
+                        <BiEdit className='icon' onClick={() => updateMode(item._id, item.name, item.address)}/>
+                        </td>
+                        <td><AiFillDelete className='icon'  /></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {isModalOpen && (
+              <div className="invoice-modal">
+                <h1 className="invoice-header">Invoice</h1>
+                <div className="invoice-form-container">
+                  <div className="form-row">
+                    <label className="invoice-label" htmlFor="customer-select">Customer Name:</label>
+                    <select className="invoice-select" id="customer-select">
+                      {customers.map(item => (
+                        <option value={item.name}>{item.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-row">
+                    <label className="invoice-label" htmlFor="item-input">Invoice Number:</label>
+                    <input
+                        type="text"
+                        className="invoice-input"
+                        id="invoice-input"
+                        value={invoiceNumber}
+                        readOnly
+                      />
+                  </div>
+                  <div className="form-row">
+                    <label className="invoice-label" htmlFor="date-input">Date:</label>
+                    <input type="date" className="invoice-input" id="date-input" defaultValue={new Date().toISOString().slice(0,10)} readOnly/>
+                  </div>
+                </div>
+                <div className="invoice-table-container">
+                  <table className="invoice-table">
+                    <thead>
+                      <tr>
+                        <th className="invoice-table-header">Sr. No</th>
+                        <th className="invoice-table-header">Item</th>
+                        <th className="invoice-table-header">Quantity</th>
+                        <th className="invoice-table-header">Price</th>
+                        <th className="invoice-table-header">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="invoice-table-cell">1</td>
+                        <td className="invoice-table-cell">
+                        <select className="invoice-select item-select"
+                            value={selectedItem?.itemName || ''}
+                            onChange={handleItemSelect}>
+                            <option value="">Select an item</option>
+                            {items.map(item => (
+                              <option key={item.itemName} value={item.itemName}>{item.itemName}</option>
+                            ))}
+                          </select>
+                        </td>
+                        <td className="invoice-table-cell">
+                            <input
+                              type="number"
+                              className="invoice-input quantity-input"
+                              value={quantity}
+                              onChange={handleQuantityChange}
+                            />
+                        </td>
+                        <td className="invoice-table-cell">
+                            <input
+                              type="number"
+                              className="invoice-input price-input"
+                              value={selectedItem?.itemPrice || ''}
+                              readOnly={!!selectedItem}
+                            />
+                        </td>
+                        <td className="invoice-table-cell amount-cell">{amount}</td>
+                      </tr>
+                      {tableRows}
+                      <button onClick={addRow} className="add-row">+</button>
+                  </tbody>
+                </table>
+              </div>
+            <div className="invoice-total-container">
+                <p className="invoice-total-label">Total:</p>
+                  <p className="invoice-total-value">$0</p>
+            </div>
+            <button className="invoice-btn">Submit</button>
+            <button onClick={closeModal} className="invoice-close-btn"><AiOutlineClose /></button>
+              </div>
+            )}
+          <button className="add-invoice-btn" onClick={openModal}>+</button>
+        </div>
+      </div>
+  );
+}
 export default App;
