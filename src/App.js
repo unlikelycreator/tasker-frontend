@@ -358,20 +358,22 @@ function CustomerScreen() {
 
 
 function InvoiceScreen() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const[items, setItems] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [invoices, setInvoices] = useState([])
   const [name, setName] = useState([])
   const [invoiceNo, setinvoiceNo] = useState([])
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState();
   const [totalAmount, setTotalAmount] = useState(0);
+  const [rows, setRows] = useState([{ itemName: '', quantity: 0, price: 0, amount: 0 }]);
   //const[isUpdating, setIsUpdating] = useState(false)
   //const[customerId, setcustomerId] = useState([])
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  
   //const [selectedItem, setSelectedItem] = useState(null);
   //const [quantity, setQuantity] = useState(0);
   
-  const [rows, setRows] = useState([{ itemName: '', quantity: 0, price: 0, amount: 0 }]);
+
   useEffect(() => {
     getAllCustomers(setCustomers);
     getAllItems(setItems)
@@ -382,6 +384,7 @@ function InvoiceScreen() {
     if (isModalOpen){
       const randomNumber = Math.floor(10000000 + Math.random() * 90000000);
       setinvoiceNo(randomNumber.toString());
+      setDate(new Date().toISOString().slice(0, 10))
     }
   },[isModalOpen])
 
