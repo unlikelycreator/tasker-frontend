@@ -23,7 +23,8 @@
   
 .menu-toggle span:hover{
     transform: scale(1.1);
-    background-color: #3e8eff;
+    background-color: #e99f4c;
+    color: black;
 }
 
 .menu-toggle svg {
@@ -41,7 +42,7 @@
     height: 100%;
     width: 300px;
     padding: 40px 20px;
-    background-color: #fff;
+    background-color: #d6e7dd;
     box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
     transform: translateX(-100%);
     transition: transform 0.5s ease-in-out;
@@ -102,7 +103,7 @@
   
 .menu-buttons button.active,
 .menu-buttons button:hover {
-    background-color: #3e8eff;
+    background-color: #285848;
     color: white;
 }
   

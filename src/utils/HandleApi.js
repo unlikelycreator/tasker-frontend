@@ -4,7 +4,7 @@ const baseurl = "https://tasker-backend.onrender.com/tasks"
 const baseurlac = "https://tasker-backend.onrender.com/activities"
 const baseurlItem = "https://tasker-backend.onrender.com/item"
 const baseurlcust= "https://tasker-backend.onrender.com/customer"
-//const baseurlinvoice= "http://localhost:5000/invoice"
+const baseurlinvoice= "https://tasker-backend.onrender.com/invoice"
 /*https://tasker-backend.onrender.com*/
 
 /*Get*/
@@ -43,6 +43,15 @@ const getAllCustomers = (setCustomers) => {
         setCustomers(data)
     })
   }
+
+const getAllInvoices = (setInvoice) =>{
+    axios
+    .get(baseurlinvoice)
+    .then(({data}) =>{
+        console.log('data -->', data);
+        setInvoice(data)
+    })
+}
 
 /*Add*/
 const addTask = (text, setText, setTask) =>{
@@ -87,8 +96,20 @@ const addCustomer = (customerName, customerAddress, setcustomerName, setcustomeA
         setcustomerName("")
         setcustomeAddress("")
     }).catch((err) => console.log(err))
-  }
+}
 
+const addInvoice = (name, invoiceNo, date, rows, totalAmount, setName, setinvoiceNo, setRows, setTotalAmount, setInvoices) =>{
+axios
+.post(`${baseurlinvoice}/save`,{name, invoiceNo, date, invoiceItems: rows, totalAmount})
+.then((data) =>{
+    console.log(data);
+    getAllInvoices(setInvoices)
+    setName([])
+    setinvoiceNo([])
+    setRows([])
+    setTotalAmount([])
+}).catch((err) => console.log(err))
+}
 
 /*Update*/
 const updateTask = (taskId, text, setTask, setText, setIsUpdating, selectedItems) =>{
@@ -184,5 +205,19 @@ const deleteCustomer = (_id, setCustomers) =>{
     .catch((err) => console.log(err))
   }
 
-export {getAllTask, addTask, updateTask, deleteTask, getAllActivity, addActivity, updateActivity, deleteActivity, 
-    getAllItems, addItem, updateItem, deleteItem, getAllCustomers,addCustomer, updateCustomer, deleteCustomer}
+const deleteInvoice = (_id, setInvoices) =>{
+axios
+.post(`${baseurlinvoice}/delete`,{_id: _id})
+.then((data) =>{
+    console.log(data)
+    getAllInvoices(setInvoices)
+    console.log("Customer deleted successfully")
+})
+.catch((err) => console.log(err))
+}
+
+export {getAllTask, addTask, updateTask, deleteTask,
+    getAllActivity, addActivity, updateActivity, deleteActivity, 
+    getAllItems, addItem, updateItem, deleteItem,
+     getAllCustomers,addCustomer, updateCustomer, deleteCustomer,
+    getAllInvoices, addInvoice, deleteInvoice}

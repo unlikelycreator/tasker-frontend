@@ -9,7 +9,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-    background-color: #f6f6f6 ;
+    background-color: #f2ebe9 ;
     font-family: Arial, Helvetica, sans-serif;
     overflow: hidden; /* Hide scrollbars */
     margin: 0;
@@ -23,12 +23,14 @@ body {
   max-width: 100%;
   margin: auto;
   padding: 0 1rem;
+  
 }
 
 .app-container{
   width: 100%;
   height: 100vh;
   display: flex;
+  background-color: #ffffff;
 }
 
 .screen-container{
@@ -79,7 +81,7 @@ h1{
 .modal-btn{
   padding: 10px 20px;
   border: none;
-  background-color: #3e8eff;
+  background-color: #285848;
   color: white;
   border-radius: 10px;
 }
@@ -87,14 +89,14 @@ h1{
 .modal-btn2{
   padding: 5px;
   border: none;
-  background-color: #3e8eff;
+  background-color: #285848;
   color: white;
 }
 
 .modal-btn:hover{
   padding: 10px 20px;
   border: none;
-  background-color: #fffc47;
+  background-color: #e99f4c;
   color: rgb(26, 26, 26);
   border-radius: 10px;
 }
@@ -163,7 +165,7 @@ h1{
 .modal input[type="text"] {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #1f2833;
   border-radius: 3px;
   text-align: left;
 }
@@ -176,14 +178,14 @@ h1{
   padding: 10px;
   border: none;
   border-radius: 3px;
-  background-color: #007bff;
+  background-color: #285848;
   color: white;
   cursor: pointer;
 }
 
 .modal button[type="submit"]:hover,
 .modal .modal-btn:hover {
-  background-color: #0062cc;
+  background-color: #e99f4c;
 }
 
 .selectedoptions{
@@ -224,10 +226,11 @@ h1{
   width: 400px;
   padding: 1rem;
   border-radius: 15px;
+  background-color: #c4d2ce;
 }
 
 .add{
-  background-color: #2277ee;
+  background-color: #285848;
   color: #fff;
   padding: 1rem;
   cursor: pointer;
@@ -235,25 +238,24 @@ h1{
 }
 
 .add:hover{
-  background-color: rgb(250, 217, 97);
+  background-color: #e99f4c;
   color: black;
 }
 
 .task{
   margin-top: 1rem;
-  background-color: #e2e2e2;
-  color: #323232;
+  background-color: #e1e1e1;
+  color: #111111;
   padding: 1.5rem 3rem;
   border-radius: 5px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .task:hover{
-  position: relative;
   margin-top: 1rem;
-  background-color: #a3bef4;
-  color: #323232;
+  background-color: #a8ceb7;
   padding: 1.5rem 3rem;
   border-radius: 5px;
 }

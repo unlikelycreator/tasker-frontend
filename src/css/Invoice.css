@@ -170,7 +170,7 @@
     height: 50px;
     width: 50px;
     border-radius: 50%;
-    background-color: #2277e7;
+    background-color: #285848;
     color: white;
     font-size: 30px;
     bottom: 30px;
@@ -181,7 +181,8 @@
 }
 
 .add-invoice-btn:hover{
-    background-color: #1d1d1d;
+    background-color: #e99f4c;
+    color: #1d1d1d;
     transform: scale(1.3);
 }
 

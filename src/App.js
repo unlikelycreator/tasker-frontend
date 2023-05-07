@@ -8,6 +8,8 @@ import Ta from './component/taskActivity'
 import { addTask, getAllTask, updateTask, deleteTask, addActivity, getAllActivity, updateActivity, deleteActivity} from "./utils/HandleApi";
 import { getAllItems, addItem, updateItem, deleteItem } from "./utils/HandleApi";
 import { getAllCustomers, addCustomer, updateCustomer, deleteCustomer } from "./utils/HandleApi";
+import { getAllInvoices, addInvoice, deleteInvoice} from "./utils/HandleApi";
+
 
 //Icons Import
 import { AiFillSchedule, AiOutlineClose, AiOutlineShoppingCart , AiFillCheckCircle, AiFillProject, AiFillDelete } from 'react-icons/ai'
@@ -358,22 +360,31 @@ function CustomerScreen() {
 function InvoiceScreen() {
   const[items, setItems] = useState([]);
   const [customers, setCustomers] = useState([]);
+  const [invoices, setInvoices] = useState([])
+  const [name, setName] = useState([])
+  const [invoiceNo, setinvoiceNo] = useState([])
+  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [totalAmount, setTotalAmount] = useState(0);
   //const[isUpdating, setIsUpdating] = useState(false)
   //const[customerId, setcustomerId] = useState([])
-  const [invoiceNumber, setInvoiceNumber] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   //const [selectedItem, setSelectedItem] = useState(null);
   //const [quantity, setQuantity] = useState(0);
-  const [totalAmount, setTotalAmount] = useState(0);
-  const [rows, setRows] = useState([{ item: '', quantity: 0, price: 0, amount: 0 }]);
+  
+  const [rows, setRows] = useState([{ itemName: '', quantity: 0, price: 0, amount: 0 }]);
   useEffect(() => {
     getAllCustomers(setCustomers);
     getAllItems(setItems)
-    const randomNumber = Math.floor(10000000 + Math.random() * 90000000);
-
-    // Set generated number as invoice number
-    setInvoiceNumber(randomNumber.toString());
+    getAllInvoices(setInvoices)
   }, [])
+
+  useEffect(() =>{
+    if (isModalOpen){
+      const randomNumber = Math.floor(10000000 + Math.random() * 90000000);
+      setinvoiceNo(randomNumber.toString());
+    }
+  },[isModalOpen])
+
 
   function getItemPrice(itemName, items) {
     const selectedItem = items.find(item => item.itemName === itemName);
@@ -386,7 +397,7 @@ function InvoiceScreen() {
     setRows((rows) =>
     rows.map((row, i) => {
       if (i === index) {
-        return { ...row, item: selectedValue, price: selectedPrice };
+        return { ...row, itemName: selectedValue, price: selectedPrice };
       } else {
         return row;
       }
@@ -403,7 +414,7 @@ function InvoiceScreen() {
   }
 
   function addRow() {
-    const newRows = [...rows, { item: '', quantity: 0, price: 0, amount: 0 }];
+    const newRows = [...rows, { itemName: '', quantity: 0, price: 0, amount: 0 }];
     setRows(newRows);
     console.log(rows)
   }
@@ -479,6 +490,18 @@ function InvoiceScreen() {
     setTotalAmount(newTotalAmount);
   }, [rows]);
 
+
+  const handleSaveInvoice = (e) => {
+    e.preventDefault();
+    addInvoice(name, invoiceNo, date, rows, totalAmount, setName, setinvoiceNo, setRows, setTotalAmount, setInvoices)
+    console.log(name, invoiceNo, date, rows, totalAmount)
+  }
+
+  const handleInvoiceDelete = (e, _id) =>{
+    e.preventDefault();
+    deleteInvoice(_id, setInvoices)
+  }
+
   return (
       <div className="screen">
           <h1>Invoice Screen</h1>
@@ -488,20 +511,24 @@ function InvoiceScreen() {
                   <thead>
                       <tr>
                         <th>Name</th>
-                        <th>Address</th>
+                        <th>InvoiceNo</th>
+                        <th>Date</th>
+                        <th>Total Amount</th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {customers.map((item) => (
+                    {invoices.map((item) => (
                       <tr key={item._id}>
                         <td>{item.name}</td>
-                        <td>{item.address}</td>
+                        <td>{item.invoiceNo}</td>
+                        <td>{new Date(item.date).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}</td>
+                        <td>{item.totalAmount}</td>
                         <td>
                         <BiEdit className='icon' /*onClick={() => updateMode(item._id, item.name, item.address)}*//>
                         </td>
-                        <td><AiFillDelete className='icon'  /></td>
+                        <td><AiFillDelete className='icon'  onClick={(e) => handleInvoiceDelete(e, item._id)}/></td>
                       </tr>
                     ))}
                   </tbody>
@@ -513,7 +540,8 @@ function InvoiceScreen() {
                 <div className="invoice-form-container">
                   <div className="form-row">
                     <label className="invoice-label" htmlFor="customer-select">Customer Name:</label>
-                    <select className="invoice-select" id="customer-select">
+                    <select className="invoice-select" id="customer-select" onChange={(e) => setName(e.target.value)}>
+                      <option value="">Select an item</option>
                       {customers.map(item => (
                         <option value={item.name}>{item.name}</option>
                       ))}
@@ -525,13 +553,13 @@ function InvoiceScreen() {
                         type="text"
                         className="invoice-input"
                         id="invoice-input"
-                        value={invoiceNumber}
+                        value={invoiceNo}
                         readOnly
                       />
                   </div>
                   <div className="form-row">
                     <label className="invoice-label" htmlFor="date-input">Date:</label>
-                    <input type="date" className="invoice-input" id="date-input" defaultValue={new Date().toISOString().slice(0,10)} readOnly/>
+                    <input type="date" className="invoice-input" id="date-input" value={date} readOnly/>
                   </div>
                 </div>
                 <div className="invoice-table-container">
@@ -562,7 +590,7 @@ function InvoiceScreen() {
                   </tbody>
                 </table>
               </div>
-            <button className="invoice-btn">Submit</button>
+            <button className="invoice-btn" onClick={handleSaveInvoice}>Submit</button>
             <button onClick={closeModal} className="invoice-close-btn"><AiOutlineClose /></button>
               </div>
             )}
