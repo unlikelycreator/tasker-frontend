@@ -367,6 +367,9 @@ function InvoiceScreen() {
   const [date, setDate] = useState();
   const [totalAmount, setTotalAmount] = useState(0);
   const [rows, setRows] = useState([{ itemName: '', quantity: 0, price: 0, amount: 0 }]);
+  const [editMode, setEditMode] = useState(false);
+
+
   //const[isUpdating, setIsUpdating] = useState(false)
   //const[customerId, setcustomerId] = useState([])
   
@@ -441,6 +444,25 @@ function InvoiceScreen() {
     setIsModalOpen(false);
   };
 
+  const handleEditClick = (itemId) => {
+    setEditMode(true);
+    const invoiceItem = invoices.find(item => item._id === itemId);
+    setName(invoiceItem.name);
+    setinvoiceNo(invoiceItem.invoiceNo);
+    setDate(invoiceItem.date);
+    setRows(invoiceItem.invoiceItems);
+    setTotalAmount(invoiceItem.totalAmount);
+  };
+
+  const handleBackClick = () => {
+    setEditMode(false);
+    setName([]);
+    setinvoiceNo([]);
+    setDate(null);
+    setRows([]);
+    setTotalAmount(0);
+  };
+
   const tableRows = rows.map((row, index) => (
     <tr key={index}>
       <td className="invoice-table-cell">{index + 1}</td>
@@ -507,14 +529,87 @@ function InvoiceScreen() {
 
   return (
       <div className="screen">
-          <h1>Invoice Screen</h1>
+          {editMode ? (
+            <div className="edit-screen">
+              <button onClick={handleBackClick} className="edit-screen-back-btn">Back</button>
+              <h1 className="edit-invoice-heading">INVOICE</h1>
+              <div className="edit-invoice-details">
+                <div className="edit-customer-details">
+                  <h2 className="edit-customer-heading">Customer Information</h2>
+                  <div className="edit-customer-name">
+                    <label htmlFor="customer-name">Customer Name</label>
+                    <input type="text" id="customer-name" value={name} readOnly/>
+                  </div>
+                  <div className="edit-invoice-number">
+                    <label htmlFor="invoice-number">Invoice Number</label>
+                    <input type="text" id="invoice-number" value={invoiceNo} />
+                  </div>
+                  <div className="edit-invoice-date">
+                    <label htmlFor="invoice-date">Invoice Date</label>
+                    <input type="date" id="invoice-date" value={new Date(date).toISOString().substr(0, 10)} />
+                  </div>
+                </div>
+                <div className="edit-invoice-items">
+                  <h2 className="items-heading">Items</h2>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rows.map((item, index) => (
+                        <tr key={index}>
+                          <td>{item.itemName}</td>
+                          <td>{item.quantity}</td>
+                          <td>{item.price}</td>
+                          <td>{item.quantity * item.price}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {/*
+                  <div className="edit-add-item">
+                    <div className="edit-item-name">
+                      <label htmlFor="item-name">Item Name</label>
+                      <input type="text" id="item-name" value={name}  />
+                    </div>
+                    <div className="edit-item-quantity">
+                      <label htmlFor="item-quantity">Quantity</label>
+                      <input type="number" id="item-quantity" value={invoiceNo}  />
+                    </div>
+                    <div className="edit-item-price">
+                  <label htmlFor="item-price">Price</label>
+                  <input type="number" id="item-price" value={date} />
+                  </div>
+                  </div>*/}
+                  <div className="total">
+                  <h2>Total: {totalAmount}</h2>
+                  </div>
+                  </div>
+                  </div>
+                  <div className="edit-invoice-footer">
+                  <div className="edit-invoice-date-footer">
+                  <p>Date: {new Date().toLocaleDateString()}</p>
+                  </div>
+                  <div className="signature">
+                  <p>Signature/Name:</p>
+                  </div>
+                  </div>
+                  <button className="submit-button">Submit Invoice</button>
+            </div>
+          ) : (
           <div className="invoice-screen">
+              <h1>Invoice Screen</h1>
               <div className="invoice-table">
                 <table>
                   <thead>
                       <tr>
                         <th>Name</th>
-                        <th>InvoiceNo</th>
+                        <th>Invoice Number</th>
                         <th>Date</th>
                         <th>Total Amount</th>
                         <th>Edit</th>
@@ -529,7 +624,7 @@ function InvoiceScreen() {
                         <td>{new Date(item.date).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}</td>
                         <td>{item.totalAmount}</td>
                         <td>
-                        <BiEdit className='icon' /*onClick={() => updateMode(item._id, item.name, item.address)}*//>
+                          <BiEdit className='icon' onClick={() => handleEditClick(item._id)} />
                         </td>
                         <td><AiFillDelete className='icon'  onClick={(e) => handleInvoiceDelete(e, item._id)}/></td>
                       </tr>
@@ -599,6 +694,7 @@ function InvoiceScreen() {
             )}
           <button className="add-invoice-btn" onClick={openModal}>+</button>
         </div>
+        )}
       </div>
   );
 }

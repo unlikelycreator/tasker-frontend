@@ -104,6 +104,7 @@
 .invoice-table {
     border-collapse: collapse;
     width: 100%;
+    margin-top: 50px;
 }
 
 .invoice-table-header {
@@ -239,3 +240,166 @@
       margin-top: 10px;
     }
   }
+
+
+
+/*Invoice Edit Window*/
+
+/* Reset CSS */
+.edit-screen {
+    background-color: #fff;
+    border-radius: 8px;
+    
+    font-family: sans-serif;
+    padding: 24px;
+  }
+  
+  .edit-screen h1 {
+    font-size: 32px;
+    margin-bottom: 16px;
+  }
+  
+  .edit-screen-back-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background-color: #333;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 8px 16px;
+  }
+  
+  .edit-invoice-heading {
+    border-bottom: 1px solid #ccc;
+    font-size: 24px;
+    margin-top: 32px;
+    padding-bottom: 16px;
+  }
+  
+  .edit-customer-heading {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+  
+  .edit-customer-name label,
+  .edit-invoice-number label,
+  .edit-invoice-date label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  
+  .edit-customer-name input,
+  .edit-invoice-number input,
+  .edit-invoice-date input {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    padding: 8px;
+    width: 100%;
+  }
+  
+  .items-heading {
+    font-size: 20px;
+    margin-top: 32px;
+    margin-bottom: 16px;
+  }
+  
+  .edit-screen table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  .edit-screen table th,
+   table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .edit-screen table th {
+    background-color: #f0f0f0;
+    color: black;
+    font-weight: bold;
+  }
+  
+  .edit-add-item {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  
+  .edit-item-name,
+  .edit-item-quantity,
+  .edit-item-price {
+    margin-right: 16px;
+    margin-bottom: 16px;
+    width: calc(33.33% - 16px);
+  }
+  
+  .edit-item-name label,
+  .edit-item-quantity label,
+  .edit-item-price label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  
+  .edit-item-name input,
+  .edit-item-quantity input,
+  .edit-item-price input {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    padding: 8px;
+    width: 100%;
+  }
+  
+  .total {
+    margin-top: 32px;
+    text-align: right;
+  }
+  
+  .total h2 {
+    font-size: 24px;
+    margin: 0;
+  }
+  
+  .edit-invoice-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 32px;
+  }
+  
+  .edit-invoice-date-footer,
+  .signature {
+    width: 45%;
+  }
+  
+  .edit-invoice-date-footer p,
+  .signature p {
+    font-size: 16px;
+    margin: 0;
+  }
+  
+  .submit-button {
+    background-color: #333;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 32px;
+    padding: 12px 24px;
+  }
+    
+    
+    
+    
+    
+    
+    
+  
