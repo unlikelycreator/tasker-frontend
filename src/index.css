@@ -12,14 +12,12 @@ body {
     background-color: #f2ebe9 ;
     font-family: Arial, Helvetica, sans-serif;
     overflow: hidden; /* Hide scrollbars */
-    margin: 0;
-    padding: 0;
 }
 
 
 /*Main*/
-.screen{
-  height: 90vh;
+.task-screen{
+  min-height: 90vh;
   max-width: 100%;
   margin: auto;
   padding: 0 1rem;
@@ -37,7 +35,7 @@ body {
   width: 100%;
 }
 
-.screen h1{
+.task-screen h1{
   margin-top: 50px;
 }
 
@@ -188,23 +186,21 @@ h1{
   background-color: #e99f4c;
 }
 
-.selectedoptions{
-  font-size: 18px;
-  margin-left: 10px;
-}
+
 
 /*List Items */
-.top{
+.task-top{
   margin-top: 1rem;
   display: flex;
   gap: 1rem;
   justify-content: center;
 }
 
-.list{
+.task-list{
+  margin-top: 50px;
   height: 80vh;
   overflow-y: scroll;
-  overflow: hidden; /* Hide scrollbars */
+  /* Hide scrollbars */
 }
 
 .main{

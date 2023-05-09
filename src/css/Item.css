@@ -1,8 +1,15 @@
+.item-screen{
+  height: 100vh;
+  max-width: 100%;
+  overflow-y: scroll;
+}
+
 .item-container{
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 50px;
 }
 
 .item-top{
@@ -55,27 +62,35 @@
   background-color: #444;
 }
 
-  table {
+  .item-table {
     border-collapse: collapse;
     width: 90%;
     margin: 0 auto;
+    margin-top: 40px;
   }
-  
-  thead {
-    background-color: #000;
+
+  .item-thead {
+    background-color: #285848;
     color: #fff;
   }
   
-  th, td {
+  .item-table th, td {
     border: 1px solid #ccc;
     padding: 8px;
     text-align: left;
   }
-  
-  tr:nth-child(even) {
+
+  .item-table th, td:hover {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+  }
+  .item-table tr:nth-child(even) {
     background-color: #f2f2f2;
   }
-
+  .item-tbody tr:hover {
+    background-color: #ddd;
+  }
 
   @media (max-width: 991.98px){
   	.item-input{

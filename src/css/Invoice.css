@@ -17,6 +17,10 @@
     border-radius: 5px;
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2);
   }
+
+  .invoice-main{
+    width: 100%;
+  }
   
 .invoice-modal {
     position: fixed;
@@ -98,29 +102,10 @@
     width: 100%;
     overflow-x: auto;
     margin-bottom: 20px;
-    max-height: 450px;
 }
 
-.invoice-table {
-    border-collapse: collapse;
-    width: 100%;
-    margin-top: 50px;
-}
 
-.invoice-table-header {
-    font-size: 18px;
-    font-weight: bold;
-    text-align: left;
-    padding: 10px;
-    border-bottom: 2px solid #ddd;
-}
 
-.invoice-table-cell {
-    font-size: 16px;
-    text-align: left;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
 
 .amount-cell {
     font-weight: bold;
@@ -132,6 +117,11 @@
     align-items: center;
     justify-content: flex-end;
     margin-bottom: 20px;
+}
+
+.invoice-table-header{
+  background-color: #285848;
+  color: white;
 }
 
 .invoice-total-label {
@@ -212,6 +202,32 @@
     background-color: #4f4f4f;
 }
 
+.invoice-table {
+  border-collapse: collapse;
+  width: 90%;
+  margin: 0 auto;
+  margin-top: 50px;
+}
+
+.invoice-table table{
+  width: 100%;
+  margin-top: 50px;
+}
+
+.invoice-thead {
+  background-color: #285848;
+  color: #fff;
+}
+
+.invoice-table th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.invoice-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
 
 @media only screen and (max-width: 600px) {
     .invoice-table-header,
@@ -321,8 +337,8 @@
   }
   
   .edit-screen table th {
-    background-color: #f0f0f0;
-    color: black;
+    background-color: #285848;
+    color: rgb(255, 255, 255);
     font-weight: bold;
   }
   

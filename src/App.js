@@ -21,6 +21,7 @@ import { BsFillPersonFill } from 'react-icons/bs';
 import "./css/Item.css"
 import "./css/Menu.css"
 import "./css/Invoice.css"
+import "./css/Customer.css"
 
 
 
@@ -83,9 +84,9 @@ function TaskScreen() {
     setTaskId(_id)
   }
   return (
-    <div className="screen">
+    <div className="task-screen">
           <h1>Task Screen</h1>
-          <div className="top">
+          <div className="task-top">
             <input
             className="maininput"
             type="text" 
@@ -100,7 +101,7 @@ function TaskScreen() {
                 {isUpdating ? "Update": "Add"}
             </div>
           </div>
-          <div className="list">
+          <div className="task-list">
             {task.map((item) => <Task 
             key={item._id} 
             text={item.text} 
@@ -126,9 +127,9 @@ function ActivityScreen() {
     setActivityID(_id)
   }
   return (
-    <div className="screen">
+    <div className="task-screen">
           <h1>Activity Screen</h1>
-          <div className="top">
+          <div className="task-top">
             <input 
             className="maininput"
             type="text" 
@@ -143,7 +144,7 @@ function ActivityScreen() {
                 {isUpdating ? "Update": "Add"}
             </div>
           </div>
-          <div className="list">
+          <div className="task-list">
             {activity.map((item) => <Activity 
             key={item._id} 
             text={item.text} 
@@ -167,11 +168,9 @@ function TaskAcScreen() {
 
 
   return (
-    <div className="screen">
-      <div className="container" >
-
+    <div className="task-screen">
       <h1>All Task & Activities</h1>
-      <div className="list">
+      <div className="task-list">
       {task && task.length > 0 ? (
         task.map((task, index) => (
           <Ta
@@ -185,7 +184,6 @@ function TaskAcScreen() {
         <p>No data found</p>
       )}
       </div>
-    </div>
     </div>
   );
 }
@@ -248,7 +246,7 @@ function ItemsScreen() {
     }
     
     return (
-      <div className="screen">
+      <div className="item-screen">
         <div className="item-container" >
           <h1>Items</h1>
           <div className="item-input">
@@ -262,8 +260,8 @@ function ItemsScreen() {
               : () => addItem(itemName, itemDescription, itemPrice, setItems, setitemName, setitemDescription, setitemPrice, setItems)}>
                 {isUpdating ? "Update": "Add"}</button>
           </div>
-          <table>
-              <thead>
+          <table className="item-table">
+              <thead className="item-thead">
                 <tr>
                   <th>Item Name</th>
                   <th>Item Description</th>
@@ -272,7 +270,7 @@ function ItemsScreen() {
                   <th>Delete</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="item-tbody">
               {items.map((item) => (
                 <tr key={item._id}>
                   <td>{item.itemName}</td>
@@ -316,8 +314,8 @@ function CustomerScreen() {
   }
   
   return (
-      <div className="screen">
-        <div className="item-container" >
+      <div className="customer-screen">
+        <div className="customer-container" >
           <h1>Customers</h1>
           <div className="item-input">
             <div className="item-input">
@@ -329,8 +327,8 @@ function CustomerScreen() {
               : () => addCustomer(customerName, customerAddress, setcustomerName, setcustomeAddress, setCustomers)}>
                 {isUpdating ? "Update": "Add"}</button>
           </div>
-          <table>
-              <thead>
+          <table className="customer-table">
+              <thead className="customer-thead">
                 <tr>
                   <th>Name</th>
                   <th>Address</th>
@@ -338,7 +336,7 @@ function CustomerScreen() {
                   <th>Delete</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="customer-tbody">
               {customers.map((item) => (
                 <tr key={item._id}>
                   <td>{item.name}</td>
@@ -368,7 +366,7 @@ function InvoiceScreen() {
   const [totalAmount, setTotalAmount] = useState(0);
   const [rows, setRows] = useState([{ itemName: '', quantity: 0, price: 0, amount: 0 }]);
   const [editMode, setEditMode] = useState(false);
-
+  const [itemId, setItemId] = useState([])
 
   //const[isUpdating, setIsUpdating] = useState(false)
   //const[customerId, setcustomerId] = useState([])
@@ -383,13 +381,20 @@ function InvoiceScreen() {
     getAllInvoices(setInvoices)
   }, [])
 
+
+
   useEffect(() =>{
     if (isModalOpen){
-      const randomNumber = Math.floor(10000000 + Math.random() * 90000000);
-      setinvoiceNo(randomNumber.toString());
-      setDate(new Date().toISOString().slice(0, 10))
+      if (invoices.length > 0) {
+        const sortedInvoices = [...invoices].sort((a, b) => b.invoiceNo - a.invoiceNo);
+        const highestInvoiceNo = sortedInvoices[0].invoiceNo;
+        setinvoiceNo(parseInt(highestInvoiceNo) + 1);
+      } else {
+        setinvoiceNo(1);
+      }
+      setDate(new Date().toLocaleDateString("en-GB", { day: 'numeric', month: 'numeric', year: 'numeric' }));
     }
-  },[isModalOpen])
+  },[isModalOpen,invoices])
 
 
   function getItemPrice(itemName, items) {
@@ -440,19 +445,27 @@ function InvoiceScreen() {
   const openModal = (event) => {
     setIsModalOpen(true);
   };
+
   const closeModal = () => {
     setIsModalOpen(false);
+    console.log(date)
+    console.log(rows)
+
   };
 
   const handleEditClick = (itemId) => {
     setEditMode(true);
     const invoiceItem = invoices.find(item => item._id === itemId);
+    setItemId(invoiceItem._id);
     setName(invoiceItem.name);
     setinvoiceNo(invoiceItem.invoiceNo);
     setDate(invoiceItem.date);
     setRows(invoiceItem.invoiceItems);
     setTotalAmount(invoiceItem.totalAmount);
   };
+
+
+
 
   const handleBackClick = () => {
     setEditMode(false);
@@ -469,10 +482,9 @@ function InvoiceScreen() {
       <td className="invoice-table-cell">
         <select
           className="invoice-select item-select"
-          value={row.item}
+          value={row.itemName}
           onChange={(e) => handleItemSelect(e, index)}
         >
-          <option value="">Select an item</option>
           {items.map((item) => (
             <option key={item.itemName} value={item.itemName}>
               {item.itemName}
@@ -522,13 +534,18 @@ function InvoiceScreen() {
     console.log(name, invoiceNo, date, rows, totalAmount)
   }
 
+  const handleUpdateInvoice = (e) => {
+    e.preventDefault();
+    addInvoice(itemId, name, invoiceNo, date, rows, totalAmount,setItemId, setName, setinvoiceNo, setRows, setTotalAmount, setInvoices)
+    console.log(name, invoiceNo, date, rows, totalAmount)
+  }
   const handleInvoiceDelete = (e, _id) =>{
     e.preventDefault();
     deleteInvoice(_id, setInvoices)
   }
 
   return (
-      <div className="screen">
+      <div className="invoice-screen">
           {editMode ? (
             <div className="edit-screen">
               <button onClick={handleBackClick} className="edit-screen-back-btn">Back</button>
@@ -538,11 +555,11 @@ function InvoiceScreen() {
                   <h2 className="edit-customer-heading">Customer Information</h2>
                   <div className="edit-customer-name">
                     <label htmlFor="customer-name">Customer Name</label>
-                    <input type="text" id="customer-name" value={name} readOnly/>
+                    <input type="text" id="customer-name" value={name} onChange={(e) => setName(e.target.value)}/>
                   </div>
                   <div className="edit-invoice-number">
                     <label htmlFor="invoice-number">Invoice Number</label>
-                    <input type="text" id="invoice-number" value={invoiceNo} />
+                    <input type="text" id="invoice-number" value={invoiceNo} onChange={(e) => setinvoiceNo(e.target.value)}/>
                   </div>
                   <div className="edit-invoice-date">
                     <label htmlFor="invoice-date">Invoice Date</label>
@@ -554,12 +571,15 @@ function InvoiceScreen() {
                   <table>
                     <thead>
                       <tr>
+                        <th>Sr. No</th>
                         <th>Item Name</th>
                         <th>Quantity</th>
                         <th>Price</th>
                         <th>Total</th>
+                        <th>Remove</th>
                       </tr>
                     </thead>
+                    {/* 
                     <tbody>
                       {rows.map((item, index) => (
                         <tr key={index}>
@@ -569,8 +589,14 @@ function InvoiceScreen() {
                           <td>{item.quantity * item.price}</td>
                         </tr>
                       ))}
-                    </tbody>
+                    </tbody>*/}
+                    {tableRows}
                   </table>
+                  <td colSpan="5">
+                        <button onClick={addRow} className="add-row">
+                          +
+                        </button>
+                      </td>
                   {/*
                   <div className="edit-add-item">
                     <div className="edit-item-name">
@@ -593,20 +619,19 @@ function InvoiceScreen() {
                   </div>
                   <div className="edit-invoice-footer">
                   <div className="edit-invoice-date-footer">
-                  <p>Date: {new Date().toLocaleDateString()}</p>
+                  <p>Date: {new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}</p>
                   </div>
                   <div className="signature">
                   <p>Signature/Name:</p>
                   </div>
                   </div>
-                  <button className="submit-button">Submit Invoice</button>
+                  <button className="submit-button" onClick={handleUpdateInvoice}>Submit Invoice</button>
             </div>
           ) : (
-          <div className="invoice-screen">
+          <div className="invoice-main">
               <h1>Invoice Screen</h1>
-              <div className="invoice-table">
-                <table>
-                  <thead>
+                <table className="invoice-table">
+                  <thead className="invoice-thead">
                       <tr>
                         <th>Name</th>
                         <th>Invoice Number</th>
@@ -616,12 +641,12 @@ function InvoiceScreen() {
                         <th>Delete</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {invoices.map((item) => (
+                  <tbody className="invoice-tbody">
+                    {invoices.sort((a, b) => b.invoiceNo - a.invoiceNo).map((item) => (
                       <tr key={item._id}>
                         <td>{item.name}</td>
                         <td>{item.invoiceNo}</td>
-                        <td>{new Date(item.date).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}</td>
+                        <td>{new Date(item.date).toLocaleDateString("en-US")}</td>
                         <td>{item.totalAmount}</td>
                         <td>
                           <BiEdit className='icon' onClick={() => handleEditClick(item._id)} />
@@ -631,7 +656,6 @@ function InvoiceScreen() {
                     ))}
                   </tbody>
                 </table>
-              </div>
               {isModalOpen && (
               <div className="invoice-modal">
                 <h1 className="invoice-header">Invoice</h1>
@@ -657,7 +681,7 @@ function InvoiceScreen() {
                   </div>
                   <div className="form-row">
                     <label className="invoice-label" htmlFor="date-input">Date:</label>
-                    <input type="date" className="invoice-input" id="date-input" value={date} readOnly/>
+                    <input type="text" className="invoice-input" id="date-input" value={date} readOnly/>
                   </div>
                 </div>
                 <div className="invoice-table-container">
@@ -699,3 +723,5 @@ function InvoiceScreen() {
   );
 }
 export default App;
+
+
