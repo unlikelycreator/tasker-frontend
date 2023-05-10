@@ -2,10 +2,11 @@ import axios from 'axios'
 
 const baseurl = "https://tasker-backend.onrender.com/tasks"
 const baseurlac = "https://tasker-backend.onrender.com/activities"
-const baseurlItem = "https://tasker-backend.onrender.com/item"
-const baseurlcust= "https://tasker-backend.onrender.com/customer"
-const baseurlinvoice= "https://tasker-backend.onrender.com/invoice"
+const baseurlItem = "http://localhost:5000/item"
+const baseurlcust= "http://localhost:5000/customer"
+const baseurlinvoice= "http://localhost:5000/invoice"
 /*https://tasker-backend.onrender.com*/
+/*https://localhost:5000*/
 
 /*Get*/
 const getAllTask = (setTask) => {
@@ -75,9 +76,9 @@ const addActivity = (acttext, setacttext, setActivity) =>{
     }).catch((err) => console.log(err))
 }
 
-const addItem = (itemName, itemDescription, itemPrice, setitemName, setitemDescription, setitemPrice, setItems) =>{
+const addItem = (itemName, itemDescription, itemPrice, setItems, setitemName, setitemDescription, setitemPrice) =>{
   axios
-  .post(`${baseurlItem}/save`,{itemName: itemName, itemDescription: itemDescription, itemPrice: itemPrice, setItems})
+  .post(`${baseurlItem}/save`,{itemName: itemName, itemDescription: itemDescription, itemPrice: itemPrice})
   .then((data) =>{
       console.log(data);
       getAllItems(setItems)
@@ -161,6 +162,23 @@ const updateCustomer = (customerId, customerName, customerAddress, setCustomers,
     })
     .catch((err) => console.log(err))
   }
+
+  const updateInvoice = (itemId, name, invoiceNo, date, rows, totalAmount,setItemId, setName, setinvoiceNo, setRows, setTotalAmount, setInvoices) =>{
+    axios
+    .post(`${baseurlinvoice}/update`,{_id: itemId, name: name, invoiceNo: invoiceNo, date, rows, totalAmount})
+    .then((data) =>{
+          console.log(data)
+          getAllInvoices(setInvoices)
+          setName([])
+          setinvoiceNo([])
+          setRows([])
+          setTotalAmount([])
+          setItemId([])
+    })
+    .catch((err) => console.log(err))
+  }
+
+
 /*Delete*/
 
 const deleteTask = (_id, setTask) =>{
@@ -220,4 +238,4 @@ export {getAllTask, addTask, updateTask, deleteTask,
     getAllActivity, addActivity, updateActivity, deleteActivity, 
     getAllItems, addItem, updateItem, deleteItem,
      getAllCustomers,addCustomer, updateCustomer, deleteCustomer,
-    getAllInvoices, addInvoice, deleteInvoice}
+    getAllInvoices, addInvoice,updateInvoice, deleteInvoice}

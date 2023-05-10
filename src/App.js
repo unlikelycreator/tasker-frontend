@@ -8,7 +8,7 @@ import Ta from './component/taskActivity'
 import { addTask, getAllTask, updateTask, deleteTask, addActivity, getAllActivity, updateActivity, deleteActivity} from "./utils/HandleApi";
 import { getAllItems, addItem, updateItem, deleteItem } from "./utils/HandleApi";
 import { getAllCustomers, addCustomer, updateCustomer, deleteCustomer } from "./utils/HandleApi";
-import { getAllInvoices, addInvoice, deleteInvoice} from "./utils/HandleApi";
+import { getAllInvoices, addInvoice,updateInvoice, deleteInvoice} from "./utils/HandleApi";
 
 
 //Icons Import
@@ -190,7 +190,6 @@ function TaskAcScreen() {
 
 function ItemsScreen() {
     const [items, setItems] = useState([]);
-   // const [totalAmount, setTotalAmount] = useState(0);
     const [itemName, setitemName] = useState("")
     const [itemDescription, setitemDescription] = useState("")
     const [itemPrice, setitemPrice] = useState([])
@@ -200,37 +199,6 @@ function ItemsScreen() {
       getAllItems(setItems);
     }, [])
 
-    /*
-    function handleQuantityChange(e, itemId) {
-      const updatedItems = items.map((item) => {
-        if (item._id === itemId) {
-          return {
-            ...item,
-            quantity: e.target.value,
-            total: e.target.value * item.itemPrice,
-          };
-        } else {
-          return item;
-        }
-      });
-    
-      setItems(updatedItems);
-    
-      const newTotalAmount = updatedItems.reduce((total, item) => {
-        return total + item.total;
-      }, 0);
-    
-      setTotalAmount(newTotalAmount);
-    }
-
-    const handleItemUpdate = (e, itemId, name, desc, price) =>{
-        e.preventDefault();
-        console.log(itemId)
-        setitemName(name)
-        console.log(name, desc, price)
-        setitemDescription(desc)
-        setitemPrice(price)
-    }*/
 
     const handleItemdelete = (e, _id) =>{
       e.preventDefault();
@@ -244,7 +212,6 @@ function ItemsScreen() {
       setitemDescription(desc)
       setitemPrice(price)
     }
-    
     return (
       <div className="item-screen">
         <div className="item-container" >
@@ -253,11 +220,11 @@ function ItemsScreen() {
             <div className="item-input">
               <input className="input-box" type="text" value={itemName} placeholder="Item Name" onChange={(e) => setitemName(e.target.value)} />
               <input className="input-box" type="text" value={itemDescription} placeholder="Item Description" onChange={(e) => setitemDescription(e.target.value)} />
-              <input className="input-box" type="text" value={itemPrice} placeholder="Item Price" onChange={(e) => setitemPrice(e.target.value)} />
+              <input className="input-box" type="Number" value={itemPrice} placeholder="Item Price" onChange={(e) => setitemPrice(e.target.value)} />
           </div>
               <button className="item-save-button" onClick={ isUpdating ? 
               () => updateItem(itemId, itemName, itemDescription, itemPrice, setItems, setitemName, setitemDescription, setitemPrice, setIsUpdating)
-              : () => addItem(itemName, itemDescription, itemPrice, setItems, setitemName, setitemDescription, setitemPrice, setItems)}>
+              : () => addItem(itemName, itemDescription, itemPrice, setItems, setitemName, setitemDescription, setitemPrice)}>
                 {isUpdating ? "Update": "Add"}</button>
           </div>
           <table className="item-table">
@@ -392,7 +359,7 @@ function InvoiceScreen() {
       } else {
         setinvoiceNo(1);
       }
-      setDate(new Date().toLocaleDateString("en-GB", { day: 'numeric', month: 'numeric', year: 'numeric' }));
+      setDate(new Date().toISOString().slice(0,10));
     }
   },[isModalOpen,invoices])
 
@@ -474,6 +441,7 @@ function InvoiceScreen() {
     setDate(null);
     setRows([]);
     setTotalAmount(0);
+    console.log(date)
   };
 
   const tableRows = rows.map((row, index) => (
@@ -482,11 +450,11 @@ function InvoiceScreen() {
       <td className="invoice-table-cell">
         <select
           className="invoice-select item-select"
-          value={row.itemName}
+          defaultValue={row.itemName}
           onChange={(e) => handleItemSelect(e, index)}
         >
           {items.map((item) => (
-            <option key={item.itemName} value={item.itemName}>
+            <option key={item.itemName} defaultValue={item.itemName}>
               {item.itemName}
             </option>
           ))}
@@ -496,7 +464,7 @@ function InvoiceScreen() {
         <input
           type="number"
           className="invoice-input quantity-input"
-          value={row.quantity}
+          defaultValue={row.quantity}
           onChange={(e) => handleQuantityChange(e, index)}
         />
       </td>
@@ -536,13 +504,14 @@ function InvoiceScreen() {
 
   const handleUpdateInvoice = (e) => {
     e.preventDefault();
-    addInvoice(itemId, name, invoiceNo, date, rows, totalAmount,setItemId, setName, setinvoiceNo, setRows, setTotalAmount, setInvoices)
-    console.log(name, invoiceNo, date, rows, totalAmount)
+    updateInvoice(itemId, name, invoiceNo, date, rows, totalAmount,setItemId, setName, setinvoiceNo, setRows, setTotalAmount, setInvoices)
+    console.log(itemId, name, invoiceNo, date, rows, totalAmount)
   }
   const handleInvoiceDelete = (e, _id) =>{
     e.preventDefault();
     deleteInvoice(_id, setInvoices)
   }
+
 
   return (
       <div className="invoice-screen">
@@ -555,15 +524,15 @@ function InvoiceScreen() {
                   <h2 className="edit-customer-heading">Customer Information</h2>
                   <div className="edit-customer-name">
                     <label htmlFor="customer-name">Customer Name</label>
-                    <input type="text" id="customer-name" value={name} onChange={(e) => setName(e.target.value)}/>
+                    <input type="text" id="customer-name" defaultValue={name} onChange={(e) => setName(e.target.value)}/>
                   </div>
                   <div className="edit-invoice-number">
                     <label htmlFor="invoice-number">Invoice Number</label>
-                    <input type="text" id="invoice-number" value={invoiceNo} onChange={(e) => setinvoiceNo(e.target.value)}/>
+                    <input type="text" id="invoice-number" defaultValue={invoiceNo} onChange={(e) => setinvoiceNo(e.target.value)} readOnly/>
                   </div>
                   <div className="edit-invoice-date">
                     <label htmlFor="invoice-date">Invoice Date</label>
-                    <input type="date" id="invoice-date" value={new Date(date).toISOString().substr(0, 10)} />
+                    <input type="date" className="invoice-input" id="date-input" defaultValue={date ? new Date(date).toISOString().substring(0, 10) : ""} />
                   </div>
                 </div>
                 <div className="edit-invoice-items">
@@ -575,21 +544,11 @@ function InvoiceScreen() {
                         <th>Item Name</th>
                         <th>Quantity</th>
                         <th>Price</th>
-                        <th>Total</th>
+                        <th>Amount</th>
                         <th>Remove</th>
                       </tr>
                     </thead>
-                    {/* 
-                    <tbody>
-                      {rows.map((item, index) => (
-                        <tr key={index}>
-                          <td>{item.itemName}</td>
-                          <td>{item.quantity}</td>
-                          <td>{item.price}</td>
-                          <td>{item.quantity * item.price}</td>
-                        </tr>
-                      ))}
-                    </tbody>*/}
+   
                     {tableRows}
                   </table>
                   <td colSpan="5">
@@ -597,21 +556,6 @@ function InvoiceScreen() {
                           +
                         </button>
                       </td>
-                  {/*
-                  <div className="edit-add-item">
-                    <div className="edit-item-name">
-                      <label htmlFor="item-name">Item Name</label>
-                      <input type="text" id="item-name" value={name}  />
-                    </div>
-                    <div className="edit-item-quantity">
-                      <label htmlFor="item-quantity">Quantity</label>
-                      <input type="number" id="item-quantity" value={invoiceNo}  />
-                    </div>
-                    <div className="edit-item-price">
-                  <label htmlFor="item-price">Price</label>
-                  <input type="number" id="item-price" value={date} />
-                  </div>
-                  </div>*/}
                   <div className="total">
                   <h2>Total: {totalAmount}</h2>
                   </div>
@@ -625,7 +569,7 @@ function InvoiceScreen() {
                   <p>Signature/Name:</p>
                   </div>
                   </div>
-                  <button className="submit-button" onClick={handleUpdateInvoice}>Submit Invoice</button>
+                  <button className="submit-button" onClick={handleUpdateInvoice}>Update Invoice</button>
             </div>
           ) : (
           <div className="invoice-main">
@@ -646,7 +590,7 @@ function InvoiceScreen() {
                       <tr key={item._id}>
                         <td>{item.name}</td>
                         <td>{item.invoiceNo}</td>
-                        <td>{new Date(item.date).toLocaleDateString("en-US")}</td>
+                        <td>{new Date(item.date).toLocaleDateString("en-GB")}</td>
                         <td>{item.totalAmount}</td>
                         <td>
                           <BiEdit className='icon' onClick={() => handleEditClick(item._id)} />
@@ -681,7 +625,7 @@ function InvoiceScreen() {
                   </div>
                   <div className="form-row">
                     <label className="invoice-label" htmlFor="date-input">Date:</label>
-                    <input type="text" className="invoice-input" id="date-input" value={date} readOnly/>
+                    <input type="date" className="invoice-input" id="date-input" defaultValue={date} required pattern="\d{4}-\d{2}-\d{2}" readOnly/>
                   </div>
                 </div>
                 <div className="invoice-table-container">
