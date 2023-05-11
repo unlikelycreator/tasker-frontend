@@ -6,7 +6,7 @@ const baseurlItem = "https://tasker-backend.onrender.com/item"
 const baseurlcust= "https://tasker-backend.onrender.com/customer"
 const baseurlinvoice= "https://tasker-backend.onrender.com/invoice"
 /*https://tasker-backend.onrender.com*/
-/*https://localhost:5000*/
+/*http://localhost:5000*/
 
 /*Get*/
 const getAllTask = (setTask) => {

@@ -16,6 +16,7 @@ import { AiFillSchedule, AiOutlineClose, AiOutlineShoppingCart , AiFillCheckCirc
 import { HiOutlineMenu } from 'react-icons/hi'
 import {BiEdit} from "react-icons/bi"
 import { BsFillPersonFill } from 'react-icons/bs';
+import {FiSearch} from 'react-icons/fi'
 
 //CSS import
 import "./css/Item.css"
@@ -190,6 +191,7 @@ function TaskAcScreen() {
 }
 
 function ItemsScreen() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
     const [items, setItems] = useState([]);
     const [itemName, setitemName] = useState("")
     const [itemDescription, setitemDescription] = useState("")
@@ -198,10 +200,24 @@ function ItemsScreen() {
     const[itemId, setitemId] = useState([])
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState();
+    const [searchTerm, setSearchTerm] = useState('');
+
     useEffect(() => {
       getAllItems(setItems);
     }, [])
 
+    const openModal = (event) => {
+      setIsModalOpen(true);
+    };
+  
+    const closeModal = () => {
+      setIsModalOpen(false);
+      setIsUpdating(false)
+      setitemId([])
+      setitemName("")
+      setitemDescription("")
+      setitemPrice([])
+    };
 
     const handleItemdelete = (e, _id) =>{
       e.preventDefault();
@@ -214,24 +230,62 @@ function ItemsScreen() {
       setitemName(name)
       setitemDescription(desc)
       setitemPrice(price)
+      setIsModalOpen(true);
     }
+
     useEffect(() => {
       setItemsPerPage(12); // or any other desired value
-    }, []);
+    },[]);
+
+    const handleSearch = (event) => {
+      setSearchTerm(event.target.value);
+      setCurrentPage(0); // reset to first page of results
+    };
+    const filteredItems = items.filter((item) => {
+      return (
+        item.itemName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.itemDescription.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.itemPrice.toString().includes(searchTerm)
+      );
+    });
+
     return (
       <div className="item-screen">
         <div className="item-container" >
           <h1>Items</h1>
-          <div className="item-input">
-            <div className="item-input">
-              <input className="input-box" type="text" value={itemName} placeholder="Item Name" onChange={(e) => setitemName(e.target.value)} />
-              <input className="input-box" type="text" value={itemDescription} placeholder="Item Description" onChange={(e) => setitemDescription(e.target.value)} />
-              <input className="input-box" type="Number" value={itemPrice} placeholder="Item Price" onChange={(e) => setitemPrice(e.target.value)} />
-          </div>
-              <button className="item-save-button" onClick={ isUpdating ? 
-              () => updateItem(itemId, itemName, itemDescription, itemPrice, setItems, setitemName, setitemDescription, setitemPrice, setIsUpdating)
-              : () => addItem(itemName, itemDescription, itemPrice, setItems, setitemName, setitemDescription, setitemPrice)}>
-                {isUpdating ? "Update": "Add"}</button>
+          {isModalOpen && (
+                <div className="item-modal-container">
+                  <div className="item-modal-input">
+                    <label>Item Name:</label>
+                    <input type="text" value={itemName} placeholder="Item Name" onChange={(e) => setitemName(e.target.value)} />
+                    <label>Item Description:</label>
+                    <input type="text" value={itemDescription} placeholder="Item Description" onChange={(e) => setitemDescription(e.target.value)} />
+                    <label>Item Price:</label>
+                    <input type="number" value={itemPrice} placeholder="Item Price" onChange={(e) => setitemPrice(e.target.value)} />
+                  </div>
+                  <div className="item-modal-buttons">
+                    <button className="item-modal-save" onClick={ isUpdating ? 
+                      () => updateItem(itemId, itemName, itemDescription, itemPrice, setItems, setitemName, setitemDescription, setitemPrice, setIsUpdating)
+                      : () => addItem(itemName, itemDescription, itemPrice, setItems, setitemName, setitemDescription, setitemPrice)}>
+                      {isUpdating ? "Update": "Add"}
+                    </button>
+                    <button className="item-modal-close" onClick={closeModal}>
+                      Close
+                    </button>
+                  </div>
+                </div>
+              )}
+          <div className="item-search-container">
+            <input
+              className="item-search-input"
+              type="text"
+              placeholder="Search items"
+              value={searchTerm}
+              onChange={handleSearch}
+            />
+            <button className="search-button">
+              <FiSearch />
+            </button>
           </div>
           <table className="item-table">
               <thead className="item-thead">
@@ -244,18 +298,35 @@ function ItemsScreen() {
               </tr>
             </thead>
             <tbody className="item-tbody">
-            {items.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage).map((item) => (
+            {filteredItems
+              .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+              .map((item) => (
                 <tr key={item._id}>
                   <td>{item.itemName}</td>
                   <td>{item.itemDescription}</td>
                   <td>{item.itemPrice}</td>
                   <td>
-                    <BiEdit className='icon' onClick={() => updateMode(item._id, item.itemName, item.itemDescription, item.itemPrice)}/>
+                    <BiEdit
+                      className="icon"
+                      onClick={() =>
+                        updateMode(
+                          item._id,
+                          item.itemName,
+                          item.itemDescription,
+                          item.itemPrice
+                        )
+                      }
+                    />
                   </td>
-                  <td><AiFillDelete className='icon' onClick={(e) => handleItemdelete(e,item._id )} /></td>
+                  <td>
+                    <AiFillDelete
+                      className="icon"
+                      onClick={(e) => handleItemdelete(e, item._id)}
+                    />
+                  </td>
                 </tr>
               ))}
-            </tbody>
+          </tbody>
           </table>
           <ReactPaginate
               previousLabel={'previous'}
@@ -271,6 +342,7 @@ function ItemsScreen() {
               nextClassName={'page-item'}
               nextLinkClassName={'page-link'}
                 />
+        <button className="add-invoice-btn" onClick={openModal}>+</button>
       </div>
     </div>
   );
@@ -310,8 +382,8 @@ function CustomerScreen() {
           <h1>Customers</h1>
           <div className="item-input">
             <div className="item-input">
-              <input className="input-box" type="text" value={customerName} placeholder="Item Name" onChange={(e) => setcustomerName(e.target.value)} />
-              <input className="input-box" type="text" value={customerAddress} placeholder="Item Description" onChange={(e) => setcustomeAddress(e.target.value)} />
+              <input className="input-box" type="text" value={customerName} placeholder="Customer Name" onChange={(e) => setcustomerName(e.target.value)} />
+              <input className="input-box" type="text" value={customerAddress} placeholder="Customer Address" onChange={(e) => setcustomeAddress(e.target.value)} />
           </div>
               <button className="item-save-button" onClick={ isUpdating ? 
               () => updateCustomer(customerId, customerName, customerAddress, setCustomers, setcustomerName, setcustomeAddress, setIsUpdating)
@@ -337,6 +409,7 @@ function CustomerScreen() {
                   </td>
                   <td><AiFillDelete className='icon' onClick={(e) => handleCustomerdelete(e,item._id )} /></td>
                 </tr>
+                
               ))}
             </tbody>
           </table>
@@ -391,6 +464,8 @@ function InvoiceScreen() {
   useEffect(() => {
     setItemsPerPage(12); // or any other desired value
   }, []);
+
+ 
 
   useEffect(() =>{
     if (isModalOpen){
@@ -622,7 +697,7 @@ function InvoiceScreen() {
                 <table className="invoice-table">
                   <thead className="invoice-thead">
                       <tr>
-                        <th>Name</th>
+                        <th>Customer Name</th>
                         <th>Invoice Number</th>
                         <th>Date</th>
                         <th>Total Amount</th>
