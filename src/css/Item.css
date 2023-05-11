@@ -80,6 +80,10 @@
     text-align: left;
   }
 
+  .item-table .td{
+    padding: 15px;
+  }
+
   .item-table th, td:hover {
     border: 1px solid #ccc;
     padding: 8px;
@@ -91,7 +95,37 @@
   .item-tbody tr:hover {
     background-color: #ddd;
   }
-
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .pagination li {
+    list-style: none;
+    display: inline-block;
+    margin-right: 10px;
+  }
+  
+  .pagination li a {
+    color: #285848;
+    cursor: pointer;
+    padding: 5px 10px;
+    border: 1px solid #285848;
+    border-radius: 5px;
+  }
+  
+  .pagination li.active a {
+    background-color: #285848;
+    color: #fff;
+  }
+  
+  .pagination li.disabled a {
+    color: #ccc;
+    cursor: not-allowed;
+    border-color: #ccc;
+  }
   @media (max-width: 991.98px){
   	.item-input{
       align-items: center;

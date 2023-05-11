@@ -23,7 +23,8 @@ import "./css/Menu.css"
 import "./css/Invoice.css"
 import "./css/Customer.css"
 
-
+//Pagination
+import ReactPaginate from "react-paginate";
 
 function App() {
   const [activeScreen, setActiveScreen] = useState('task');
@@ -195,6 +196,8 @@ function ItemsScreen() {
     const [itemPrice, setitemPrice] = useState([])
     const[isUpdating, setIsUpdating] = useState(false)
     const[itemId, setitemId] = useState([])
+    const [currentPage, setCurrentPage] = useState(0);
+    const [itemsPerPage, setItemsPerPage] = useState();
     useEffect(() => {
       getAllItems(setItems);
     }, [])
@@ -212,6 +215,9 @@ function ItemsScreen() {
       setitemDescription(desc)
       setitemPrice(price)
     }
+    useEffect(() => {
+      setItemsPerPage(12); // or any other desired value
+    }, []);
     return (
       <div className="item-screen">
         <div className="item-container" >
@@ -238,19 +244,33 @@ function ItemsScreen() {
               </tr>
             </thead>
             <tbody className="item-tbody">
-              {items.map((item) => (
+            {items.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage).map((item) => (
                 <tr key={item._id}>
                   <td>{item.itemName}</td>
                   <td>{item.itemDescription}</td>
                   <td>{item.itemPrice}</td>
                   <td>
-                  <BiEdit className='icon' onClick={() => updateMode(item._id, item.itemName, item.itemDescription, item.itemPrice)}/>
+                    <BiEdit className='icon' onClick={() => updateMode(item._id, item.itemName, item.itemDescription, item.itemPrice)}/>
                   </td>
                   <td><AiFillDelete className='icon' onClick={(e) => handleItemdelete(e,item._id )} /></td>
                 </tr>
               ))}
             </tbody>
           </table>
+          <ReactPaginate
+              previousLabel={'previous'}
+              nextLabel={'next'}
+              pageCount={Math.ceil(items.length / itemsPerPage)}
+              onPageChange={({ selected }) => setCurrentPage(selected)}
+              containerClassName={'pagination'}
+              activeClassName={'active'}
+              pageClassName={'page-item'}
+              pageLinkClassName={'page-link'}
+              previousClassName={'page-item'}
+              previousLinkClassName={'page-link'}
+              nextClassName={'page-item'}
+              nextLinkClassName={'page-link'}
+                />
       </div>
     </div>
   );
@@ -263,6 +283,8 @@ function CustomerScreen() {
   const [customerAddress, setcustomeAddress] = useState("")
   const[isUpdating, setIsUpdating] = useState(false)
   const[customerId, setcustomerId] = useState([])
+  const [currentPage, setCurrentPage] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState();
 
   useEffect(() => {
     getAllCustomers(setCustomers);
@@ -279,7 +301,9 @@ function CustomerScreen() {
     setcustomerName(name)
     setcustomeAddress(address)
   }
-  
+  useEffect(() => {
+    setItemsPerPage(12); // or any other desired value
+  }, []);
   return (
       <div className="customer-screen">
         <div className="customer-container" >
@@ -304,7 +328,7 @@ function CustomerScreen() {
               </tr>
             </thead>
             <tbody className="customer-tbody">
-              {customers.map((item) => (
+            {customers.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage).map((item) => (
                 <tr key={item._id}>
                   <td>{item.name}</td>
                   <td>{item.address}</td>
@@ -316,6 +340,20 @@ function CustomerScreen() {
               ))}
             </tbody>
           </table>
+            <ReactPaginate
+                previousLabel={'previous'}
+                nextLabel={'next'}
+                pageCount={Math.ceil(customers.length / itemsPerPage)}
+                onPageChange={({ selected }) => setCurrentPage(selected)}
+                containerClassName={'pagination'}
+                activeClassName={'active'}
+                pageClassName={'page-item'}
+                pageLinkClassName={'page-link'}
+                previousClassName={'page-item'}
+                previousLinkClassName={'page-link'}
+                nextClassName={'page-item'}
+                nextLinkClassName={'page-link'}
+            />
       </div>
     </div>
   );
@@ -334,6 +372,8 @@ function InvoiceScreen() {
   const [rows, setRows] = useState([{ itemName: '', quantity: 0, price: 0, amount: 0 }]);
   const [editMode, setEditMode] = useState(false);
   const [itemId, setItemId] = useState([])
+  const [currentPage, setCurrentPage] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState();
 
   //const[isUpdating, setIsUpdating] = useState(false)
   //const[customerId, setcustomerId] = useState([])
@@ -348,7 +388,9 @@ function InvoiceScreen() {
     getAllInvoices(setInvoices)
   }, [])
 
-
+  useEffect(() => {
+    setItemsPerPage(12); // or any other desired value
+  }, []);
 
   useEffect(() =>{
     if (isModalOpen){
@@ -511,7 +553,10 @@ function InvoiceScreen() {
     e.preventDefault();
     deleteInvoice(_id, setInvoices)
   }
-
+  const sortedInvoices = invoices.sort((a,b) => b.invoiceNo - a.invoiceNo);
+  const start = currentPage * itemsPerPage;
+  const end = Math.min((currentPage + 1) * itemsPerPage, sortedInvoices.length);
+  const displayedInvoices = sortedInvoices.slice(start, end);
 
   return (
       <div className="invoice-screen">
@@ -586,7 +631,8 @@ function InvoiceScreen() {
                     </tr>
                   </thead>
                   <tbody className="invoice-tbody">
-                    {invoices.sort((a, b) => b.invoiceNo - a.invoiceNo).map((item) => (
+
+                  {displayedInvoices.map((item) => (
                       <tr key={item._id}>
                         <td>{item.name}</td>
                         <td>{item.invoiceNo}</td>
@@ -600,6 +646,20 @@ function InvoiceScreen() {
                     ))}
                   </tbody>
                 </table>
+                <ReactPaginate
+                previousLabel={'previous'}
+                nextLabel={'next'}
+                pageCount={Math.ceil(displayedInvoices.length / itemsPerPage)}
+                onPageChange={({ selected }) => setCurrentPage(selected)}
+                containerClassName={'pagination'}
+                activeClassName={'active'}
+                pageClassName={'page-item'}
+                pageLinkClassName={'page-link'}
+                previousClassName={'page-item'}
+                previousLinkClassName={'page-link'}
+                nextClassName={'page-item'}
+                nextLinkClassName={'page-link'}
+            />
               {isModalOpen && (
               <div className="invoice-modal">
                 <h1 className="invoice-header">Invoice</h1>

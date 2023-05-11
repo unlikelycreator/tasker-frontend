@@ -15,7 +15,6 @@
   .customer-table {
     width: 90%;
     border-collapse: collapse;
-    height: 60vh;
   }
   .customer-thead{
     background-color: #285848;
@@ -24,8 +23,12 @@
   
   .customer-thead th,
   .customer-tbody td {
-    padding: 8px;
+    padding: 10px;
     border: 1px solid #ddd;
+  }
+
+  .customer-tbody td{
+    padding: 15px;
   }
   
   .customer-tbody tr:nth-child(even) {
