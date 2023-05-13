@@ -626,6 +626,7 @@ function InvoiceScreen() {
           className="invoice-select item-select"
           onChange={(e) => handleItemSelect(e, index)}
         >
+          <option>select value</option>
           {items.map((item) => (
             <option key={item.itemName} >
               {item.itemName}
