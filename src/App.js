@@ -191,7 +191,7 @@ function TaskAcScreen() {
 }
 
 function ItemsScreen() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [items, setItems] = useState([]);
     const [itemName, setitemName] = useState("")
     const [itemDescription, setitemDescription] = useState("")
@@ -299,6 +299,7 @@ function ItemsScreen() {
             </thead>
             <tbody className="item-tbody">
             {filteredItems
+              .sort((b, a) => b.itemName.localeCompare(a.itemName))
               .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
               .map((item) => (
                 <tr key={item._id}>
@@ -349,6 +350,7 @@ function ItemsScreen() {
 }
 
 function CustomerScreen() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [customers, setCustomers] = useState([]);
  // const [totalAmount, setTotalAmount] = useState(0);
   const [customerName, setcustomerName] = useState("")
@@ -357,6 +359,7 @@ function CustomerScreen() {
   const[customerId, setcustomerId] = useState([])
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState();
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     getAllCustomers(setCustomers);
@@ -367,6 +370,18 @@ function CustomerScreen() {
     deleteCustomer(_id, setCustomers)
   }
 
+  const openModal = (event) => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setIsUpdating(false)
+    setcustomerId([])
+    setcustomerName("")
+    setcustomeAddress("")
+  };
+
   const updateMode = (customerId, name, address) =>{
     setIsUpdating(true)
     setcustomerId(customerId)
@@ -376,10 +391,23 @@ function CustomerScreen() {
   useEffect(() => {
     setItemsPerPage(12); // or any other desired value
   }, []);
+
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(0); // reset to first page of results
+  };
+  const filteredCustomers = customers.filter((item) => {
+    return (
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.address.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
   return (
       <div className="customer-screen">
         <div className="customer-container" >
           <h1>Customers</h1>
+          {isModalOpen && (
           <div className="item-input">
             <div className="item-input">
               <input className="input-box" type="text" value={customerName} placeholder="Customer Name" onChange={(e) => setcustomerName(e.target.value)} />
@@ -389,6 +417,22 @@ function CustomerScreen() {
               () => updateCustomer(customerId, customerName, customerAddress, setCustomers, setcustomerName, setcustomeAddress, setIsUpdating)
               : () => addCustomer(customerName, customerAddress, setcustomerName, setcustomeAddress, setCustomers)}>
                 {isUpdating ? "Update": "Add"}</button>
+                <button className="item-modal-close" onClick={closeModal}>
+                      Close
+                </button>
+          </div>
+          )}
+          <div className="item-search-container">
+            <input
+              className="item-search-input"
+              type="text"
+              placeholder="Search items"
+              value={searchTerm}
+              onChange={handleSearch}
+            />
+            <button className="search-button">
+              <FiSearch />
+            </button>
           </div>
           <table className="customer-table">
               <thead className="customer-thead">
@@ -400,16 +444,26 @@ function CustomerScreen() {
               </tr>
             </thead>
             <tbody className="customer-tbody">
-            {customers.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage).map((item) => (
+            {filteredCustomers
+              .sort((b, a) => b.name.localeCompare(a.name))
+              .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+              .map((item) => (
                 <tr key={item._id}>
                   <td>{item.name}</td>
                   <td>{item.address}</td>
                   <td>
-                  <BiEdit className='icon' onClick={() => updateMode(item._id, item.name, item.address)}/>
+                    <BiEdit
+                      className="icon"
+                      onClick={() => updateMode(item._id, item.name, item.address)}
+                    />
                   </td>
-                  <td><AiFillDelete className='icon' onClick={(e) => handleCustomerdelete(e,item._id )} /></td>
+                  <td>
+                    <AiFillDelete
+                      className="icon"
+                      onClick={(e) => handleCustomerdelete(e, item._id)}
+                    />
+                  </td>
                 </tr>
-                
               ))}
             </tbody>
           </table>
@@ -428,6 +482,7 @@ function CustomerScreen() {
                 nextLinkClassName={'page-link'}
             />
       </div>
+      <button className="add-invoice-btn" onClick={openModal}>+</button>
     </div>
   );
 }
@@ -447,6 +502,7 @@ function InvoiceScreen() {
   const [itemId, setItemId] = useState([])
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState();
+  const [searchTerm, setSearchTerm] = useState('');
 
   //const[isUpdating, setIsUpdating] = useState(false)
   //const[customerId, setcustomerId] = useState([])
@@ -479,6 +535,7 @@ function InvoiceScreen() {
       setDate(new Date().toISOString().slice(0,10));
     }
   },[isModalOpen,invoices])
+
 
 
   function getItemPrice(itemName, items) {
@@ -633,6 +690,22 @@ function InvoiceScreen() {
   const end = Math.min((currentPage + 1) * itemsPerPage, sortedInvoices.length);
   const displayedInvoices = sortedInvoices.slice(start, end);
 
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(0); // reset to first page of results
+  };
+
+  const filteredInvoices = displayedInvoices.filter((item) => {
+    return (
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.invoiceNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.invoiceItems.some(
+        (invoiceItem) =>
+          invoiceItem.itemName.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  });
+
   return (
       <div className="invoice-screen">
           {editMode ? (
@@ -694,6 +767,18 @@ function InvoiceScreen() {
           ) : (
           <div className="invoice-main">
               <h1>Invoice Screen</h1>
+              <div className="item-search-container">
+                <input
+                  className="item-search-input"
+                  type="text"
+                  placeholder="Search items"
+                  value={searchTerm}
+                  onChange={handleSearch}
+                />
+                <button className="search-button">
+                  <FiSearch />
+                </button>
+              </div>
                 <table className="invoice-table">
                   <thead className="invoice-thead">
                       <tr>
@@ -707,7 +792,7 @@ function InvoiceScreen() {
                   </thead>
                   <tbody className="invoice-tbody">
 
-                  {displayedInvoices.map((item) => (
+                  {filteredInvoices.map((item) => (
                       <tr key={item._id}>
                         <td>{item.name}</td>
                         <td>{item.invoiceNo}</td>
