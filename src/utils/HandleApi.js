@@ -165,7 +165,7 @@ const updateCustomer = (customerId, customerName, customerAddress, setCustomers,
 
   const updateInvoice = (itemId, name, invoiceNo, date, rows, totalAmount,setItemId, setName, setinvoiceNo, setRows, setTotalAmount, setInvoices) =>{
     axios
-    .post(`${baseurlinvoice}/update`,{_id: itemId, name: name, invoiceNo: invoiceNo, date, rows, totalAmount})
+    .post(`${baseurlinvoice}/update`,{_id: itemId, name: name, invoiceNo: invoiceNo, date, invoiceItems: rows, totalAmount})
     .then((data) =>{
           console.log(data)
           getAllInvoices(setInvoices)

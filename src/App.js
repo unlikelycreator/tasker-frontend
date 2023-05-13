@@ -549,7 +549,7 @@ function InvoiceScreen() {
     setRows((rows) =>
     rows.map((row, i) => {
       if (i === index) {
-        return { ...row, itemName: selectedValue, price: selectedPrice };
+        return { ...row, itemName: selectedValue, price: selectedPrice};
       } else {
         return row;
       }
@@ -615,7 +615,7 @@ function InvoiceScreen() {
     setDate(null);
     setRows([]);
     setTotalAmount(0);
-    console.log(date)
+    console.log(rows)
   };
 
   const tableRows = rows.map((row, index) => (
@@ -624,11 +624,10 @@ function InvoiceScreen() {
       <td className="invoice-table-cell">
         <select
           className="invoice-select item-select"
-          defaultValue={row.itemName}
           onChange={(e) => handleItemSelect(e, index)}
         >
           {items.map((item) => (
-            <option key={item.itemName} defaultValue={item.itemName}>
+            <option key={item.itemName} >
               {item.itemName}
             </option>
           ))}
@@ -638,7 +637,6 @@ function InvoiceScreen() {
         <input
           type="number"
           className="invoice-input quantity-input"
-          defaultValue={row.quantity}
           onChange={(e) => handleQuantityChange(e, index)}
         />
       </td>
@@ -742,7 +740,67 @@ function InvoiceScreen() {
                       </tr>
                     </thead>
    
-                    {tableRows}
+                    {rows.map((row, index) => (
+                      <tr key={index}>
+                        <td className="invoice-table-cell">{index + 1}</td>
+                        <td className="invoice-table-cell">
+                          <select
+                            className="invoice-select item-select"
+                            value={row.itemName}
+                            onChange={(e) => handleItemSelect(e, index)}
+                          >
+                            {row.itemName ? (
+                              <>
+                                <option key={row.itemName} value={row.itemName}>
+                                  {row.itemName}
+                                </option>
+                                {items.map((item) => (
+                                  <option key={item.itemName} value={item.itemName}>
+                                    {item.itemName}
+                                  </option>
+                                ))}
+                              </>
+                            ) : (
+                              <>
+                                <option>Select Value</option>
+                                {items.map((item) => (
+                                  <option key={item.itemName} value={item.itemName}>
+                                    {item.itemName}
+                                  </option>
+                                ))}
+                              </>
+                            )}
+                          </select>
+                        </td>
+                        <td className="invoice-table-cell">
+                          <input
+                            type="number"
+                            className="invoice-input quantity-input"
+                            defaultValue={row.quantity}
+                            onChange={(e) => handleQuantityChange(e, index)}
+                          />
+                        </td>
+                        <td className="invoice-table-cell">
+                          <input
+                            type="number"
+                            className="invoice-input price-input"
+                            value={row.price}
+                            readOnly={true}
+                          />
+                        </td>
+                        <td className="invoice-table-cell amount-cell">
+                          <input
+                            type="number"
+                            className="invoice-input price-input"
+                            value={row.quantity * row.price}
+                            readOnly={true}
+                          />
+                        </td>
+                        <td className="invoice-table-cell">
+                          <button onClick={() => handleDeleteRow(index)}>Delete</button>
+                        </td>
+                      </tr>
+                    ))}
                   </table>
                   <td colSpan="5">
                         <button onClick={addRow} className="add-row">
